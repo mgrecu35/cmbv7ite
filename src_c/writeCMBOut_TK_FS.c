@@ -276,6 +276,29 @@ void copyd0s1_fs_(float *dm, int *i)
     }
 }
 
+void copyd0s1_a_fs_(float *dm, int *i)
+{
+  int k;
+  extern L2BCMB_SWATHS swathx;
+
+  for(k=0;k<nbins;k++)
+    {
+      swathx.KuGMI.aPriori.initPrecipTotDm[*i][k]=dm[k];
+    }
+}
+
+void copyd0s2_a_fs_(float *dm, int *i)
+{
+  int k;
+  extern L2BCMB_SWATHS swathx;
+
+  for(k=0;k<nbins;k++)
+    {
+      swathx.KuKaGMI.aPriori.initPrecipTotDm[*i][k]=dm[k];
+    }
+}
+
+
 void copynws1_fs_(float *Nw, int *i)
 {
   int k;
@@ -288,6 +311,17 @@ void copynws1_fs_(float *Nw, int *i)
     }
 }
 
+void copynws1_a_fs_(float *Nw, int *i)
+{
+  int k;
+  extern L2BCMB_SWATHS swathx;
+
+  for(k=0;k<nbins;k++)
+    {
+      swathx.KuGMI.aPriori.initPrecipTotLogNw[*i][k]=Nw[k];
+    }
+}
+
 void copynws2_fs_(float *Nw, int *i)
 {
   int k;
@@ -297,6 +331,18 @@ void copynws2_fs_(float *Nw, int *i)
     {
       swathx.KuKaGMI.precipTotLogNw[*i][k]=Nw[k];
       swathx.KuKaGMI.precipTotMu[*i][k]=2.0;
+    }
+}
+
+
+void copynws2_a_fs_(float *Nw, int *i)
+{
+  int k;
+  extern L2BCMB_SWATHS swathx;
+
+  for(k=0;k<nbins;k++)
+    {
+       swathx.KuKaGMI.aPriori.initPrecipTotLogNw[*i][k]=Nw[k];
     }
 }
 
@@ -366,6 +412,32 @@ void copylwcfracs2_fs_(float *mlwc_frac, float *mrate_frac, int *i)
     }
 }
 
+void copy_tot_to_liqwatercont_ku_(int *ij, float *precipTot, int *node)
+{
+  int i;
+  extern L2BCMB_SWATHS swathx;
+  for(i=node[0];i<=node[1];i++)
+    swathx.KuGMI.precipLiqWaterCont[*ij][i]=0.0;
+  int n3=node[3];
+  if(n3>node[4])
+    n3=node[4];
+  for(i=node[1]+1;i<=n3;i++)
+    if(precipTot[i]>=-1e-9)
+      {
+	float f=(i-node[1])/(node[3]-node[1]+1e-3);
+	swathx.KuGMI.precipLiqWaterCont[*ij][i]=f*precipTot[i];
+      }
+    else
+      swathx.KuGMI.precipLiqWaterCont[*ij][i]=missing_r4c;
+  for(i=node[3]+1;i<=node[4];i++)
+    if(precipTot[i]>=-1e-9)
+      	swathx.KuGMI.precipLiqWaterCont[*ij][i]=precipTot[i];
+    else
+      swathx.KuGMI.precipLiqWaterCont[*ij][i]=missing_r4c;
+  for(i=node[4];i<88;i++)
+    swathx.KuGMI.precipLiqWaterCont[*ij][i]=missing_r4c;
+}
+
 void copy_tot_to_liqrate_ku_(int *ij, float *precipTot, int *node)
 {
   int i;
@@ -388,6 +460,8 @@ void copy_tot_to_liqrate_ku_(int *ij, float *precipTot, int *node)
       	swathx.KuGMI.precipLiqRate[*ij][i]=precipTot[i];
     else
       swathx.KuGMI.precipLiqRate[*ij][i]=missing_r4c;
+  for(i=node[4];i<88;i++)
+    swathx.KuGMI.precipLiqRate[*ij][i]=missing_r4c;
 }
 void copy_tot_to_liqrate_kuka_(int *ij, float *precipTot, int *node, int *scanPatternFlag)
 {
@@ -416,6 +490,42 @@ void copy_tot_to_liqrate_kuka_(int *ij, float *precipTot, int *node, int *scanPa
      swathx.KuKaGMI.precipLiqRate[*ij][i]=precipTot[i];
    else
      swathx.KuKaGMI.precipLiqRate[*ij][i]=missing_r4c;
+ for(i=node[4];i<88;i++)
+   swathx.KuKaGMI.precipLiqRate[*ij][i]=missing_r4c;
+}
+			  //'precipLiqWaterCont'
+
+void copy_tot_to_liqwatercont_kuka_(int *ij, float *precipTot, int *node, int *scanPatternFlag)
+{
+ int i;
+ extern L2BCMB_SWATHS swathx;
+
+ if(*scanPatternFlag==0 &&(*ij<12 || *ij>36))
+   {
+     for(i=0;i<88;i++)
+       swathx.KuKaGMI.precipLiqWaterCont[*ij][i]=missing_r4c;
+     return;
+   }
+ for(i=node[0];i<=node[1];i++)
+   swathx.KuKaGMI.precipLiqWaterCont[*ij][i]=0.0;
+ int n3=node[3];
+ if(n3>node[4])
+   n3=node[4];
+ for(i=node[1]+1;i<=n3;i++)
+   if(precipTot[i]>=-1e-9)
+     {
+       float f=(i-node[1])/(node[3]-node[1]+1e-3);
+       swathx.KuKaGMI.precipLiqWaterCont[*ij][i]=f*precipTot[i];
+     }
+   else
+     swathx.KuKaGMI.precipLiqWaterCont[*ij][i]=missing_r4c;
+ for(i=node[3]+1;i<=node[4];i++)
+   if(precipTot[i]>=-1e-9)
+     swathx.KuKaGMI.precipLiqWaterCont[*ij][i]=precipTot[i];
+   else
+     swathx.KuKaGMI.precipLiqWaterCont[*ij][i]=missing_r4c;
+ for(i=node[4];i<88;i++)
+   swathx.KuKaGMI.precipLiqWaterCont[*ij][i]=missing_r4c;
 }
 			  //'precipLiqWaterCont'
 

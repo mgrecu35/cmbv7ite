@@ -96,6 +96,7 @@ void estimated_sfc_precip1_(int *i, float *pRate1d, float *pRateStd1d, float *sf
       swathx.KuGMI.estimSurfPrecipTotRate[*i]=0;
       swathx.KuGMI.estimSurfPrecipLiqRate[*i]=0;
       swathx.KuGMI.estimSurfPrecipTotRateSigma[*i]=0;
+      swathx.KuGMI.FLG.estimPrecipInClutter[*i]=0;
     }
   //printf("%i %i \n",  swathx.KuGMI.lowestEstimateBin[*i],swathx.KuGMI.phaseBinNodes[*i][4]);
 }
@@ -223,6 +224,7 @@ void estimated_sfc_precip2_(int *i, float *pRate1d, float *pRateStd1d, float *sf
       swathx.KuKaGMI.estimSurfPrecipTotRate[*i]=0;
       swathx.KuKaGMI.estimSurfPrecipLiqRate[*i]=0;
       swathx.KuKaGMI.estimSurfPrecipTotRateSigma[*i]=0;
+      swathx.KuKaGMI.FLG.estimPrecipInClutter[*i]=0;
     }
  
 }

@@ -165,6 +165,9 @@ subroutine radarRetSub4_FS(nmu2,  nmfreq2,   icL, tbRgrid,               &
   integer :: sfcBin(nscans,npixs)
   real    :: tbsim(nscans,npixs,nchans)
   integer :: flagScanPattern
+  real    :: dm3d_a(nbin,49,300), dm3dMS_a(nbin,49,300), log10NwMean_a(nbin), &
+       nw3d_a(nbin,49,300), nw3dms_a(nbin,49,300)
+
   data env_levs/18., 14., 10., 8., 6., 4., 2., 1., 0.5, 0./
   iconv=1
   nmemb1=nmemb
@@ -367,6 +370,10 @@ print*, ic
 print*, maxval(hFreqPRg(:,:,1))
 !print*, maxval(dprRet%emis), maxval(dprRet%MS%emis)
 print*,shape(yobs), nx, ny
+dm3d_a=missing_r4
+dm3dms_a=missing_r4
+nw3d_a=missing_r4
+nw3dms_a=missing_r4
 do j=1,dPRData%n1c21
    do i=1,49
 !  SFM  begin  07/29/2014; for M.Grecu, elminate NANs
@@ -402,6 +409,13 @@ do j=1,dPRData%n1c21
 !      then
          ntbpix2=ntbpix2+1
          !print*, i, j
+         do k=dPRData%node(1, i, j),dPRData%node(5, i, j)
+            dm3D_a(k,i,j)=sum(dPRRet%d0(1:nmemb1,k,i,j))/nmemb1
+            dm3Dms_a(k,i,j)=sum(dPRRet%ms%d0(1:nmemb1,k,i,j))/nmemb1
+            nw3d_a(k,i,j)=sum(dPRRet%log10dNw(1:nmemb1,k,i,j))/nmemb1
+            nw3d_a(k,i,j)=sum(dPRRet%MS%log10dNw(1:nmemb1,k,i,j))/nmemb1
+         enddo
+
          if(ifdpr(1:1)=='Y') goto 30
       !tbout(10)=sum(dPRRet%tb(i,j,1,6,1:1*nmemb1))/(nmemb1)
       !tbout(11)=sum(dPRRet%tb(i,j,2,6,1:1*nmemb1))/(nmemb1)
@@ -659,6 +673,7 @@ do j=1,dPRData%n1c21
    end do
 end do
 print*, 'before mlw'
+
 do j=1,dPRData%n1c21
    do i=1,49
       if(dPRData%rainType(i,j)>=100) then
@@ -982,6 +997,7 @@ do j=1,dPRData%n1c21
          pwc3DMS(:,i,j) = missing_r4
          pwc3DstdMS(:,i,j) = missing_r4
          d03DMS(:,i,j) = missing_r4
+         dm3dms_a(:,i,j)=missing_r4
       enddo
       do i=38,49
          sfcRainMS(i,j)=missing_r4
@@ -991,6 +1007,7 @@ do j=1,dPRData%n1c21
          pwc3DMS(:,i,j) = missing_r4
          pwc3DstdMS(:,i,j) = missing_r4
          d03DMS(:,i,j) = missing_r4
+         dm3dms_a(:,i,j)=missing_r4
       enddo
    endif
    if(ialg==1) then
@@ -1123,6 +1140,8 @@ do j=1,dPRData%n1c21
             call copysfcrainliqfracs1_fs(missing_r4, i-1)
          endif
          call copyd0s1_fs(d03D(:,i,j),i-1)
+         call copyd0s1_a_fs(dm3d_a(:,i,j),i-1)  ! apriori dm
+         call copyd0s2_a_fs(dm3dms_a(:,i,j),i-1)  ! apriori dm
          call copyzckus1_fs(zcKu3D(:,i,j),i-1)
          call copynodess1_fs(dPRData%node(:,i,j),i-1)
          !--fs_300--!
@@ -1149,9 +1168,12 @@ do j=1,dPRData%n1c21
             if(k>=dPRData%node(1,i,j).and.k<=dPRData%node(5,i,j)) then
                log10NwMean(k)=sum(dPRRet%log10dNw(1:nmemb1,k,i,j))/nmemb1 + &
                     log10(8.e+6)
+               log10NwMean_a(k)=nw3d_a(k,i,j) + &
+                    log10(8.e+6)
                mu_mean_prof(k) = mu_mean(i, j)
             else
                log10NwMean(k) = missing_r4
+               log10NwMean_a(k) = missing_r4
                mu_mean_prof(k) = missing_r4
             end if
          enddo
@@ -1160,6 +1182,7 @@ do j=1,dPRData%n1c21
          !print*, dPRData%zku1c21(dPRData%node(1,i,j):dPRData%node(5,i,j),i,j)
       else
          log10NwMean = missing_r4
+         log10NwMean_a = missing_r4
          mu_mean_prof = missing_r4
       endif
 
@@ -1187,6 +1210,8 @@ do j=1,dPRData%n1c21
       else
          !call copylognws1_fs( log10NwMean,dPRRet%n9(:,i,j),i-1)
          call copynws1_fs(log10NwMean, i-1)
+         call copynws1_a_fs(log10NwMean_a, i-1)  ! apriori
+         call copynws2_a_fs(log10NwMean_a, i-1)  ! apriori
          call copymus1_fs( mu_mean_prof, dPRRet%n9(:,i,j),i-1)
          call copypreciptype(dPRData%raintype(i,j),i-1)
          call copyw10_fs(w10_out_NS(i,j),i-1) !modified SJM 12/4/2014
@@ -1433,6 +1458,10 @@ do j=1,dPRData%n1c21
          else
             call copysfcrainliqfracs2_fs(missing_r4, i-1)
          end if
+         call copy_tot_to_liqrate_ku(i-1, rrate3D(:,i,j), dPRData%node(:,i,j))
+         call copy_tot_to_liqrate_kuka(i-1, rrate3DMS(:,i,j), dPRData%node(:,i,j),flagScanPattern)
+         call copy_tot_to_liqwatercont_ku(i-1, pwc3D(:,i,j), dPRData%node(:,i,j))
+         call copy_tot_to_liqwatercont_kuka(i-1, pwc3DMS(:,i,j), dPRData%node(:,i,j),flagScanPattern)
          call copyd0s2_fs(d03DMS(:,i,j),i-1)
          call copynodess2_fs(dPRData%node(:,i,j),i-1)
          call copyenvtemps2_fs(dPRData%envTemp(:,i,j), env_nodes(:,i), i-1)
