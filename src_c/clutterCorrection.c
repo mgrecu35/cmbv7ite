@@ -3,8 +3,12 @@
 #include "TK_2BCMB_hdf5.h"
 
 extern float missingmod_mp_missing_r4_;
-#define missing_r4c missingmod_mp_missing_r4_
+extern short missingmod_mp_missing_i2_;
+extern long missingmod_mp_missing_i4_;
 
+#define missing_r4c missingmod_mp_missing_r4_
+#define missing_i2c missingmod_mp_missing_i2_
+#define missing_i4c missingmod_mp_missing_i4_;
 float pRateCCTables[39][50];
 FILE *foutD;
 void readcluttertables_(void)
@@ -98,7 +102,16 @@ void estimated_sfc_precip1_(int *i, float *pRate1d, float *pRateStd1d, float *sf
       swathx.KuGMI.estimSurfPrecipTotRateSigma[*i]=0;
       swathx.KuGMI.FLG.estimPrecipInClutter[*i]=0;
     }
+
+  if(swathx.KuGMI.estimSurfPrecipTotRate[*i]<0)
+    swathx.KuGMI.estimSurfPrecipTotRate[*i]=missing_r4c;
+  if(swathx.KuGMI.estimSurfPrecipLiqRate[*i]<0)
+    swathx.KuGMI.estimSurfPrecipLiqRate[*i]=missing_r4c;
+  if(swathx.KuGMI.estimSurfPrecipTotRateSigma[*i]<0)
+    swathx.KuGMI.estimSurfPrecipTotRateSigma[*i]=missing_r4c;
   //printf("%i %i \n",  swathx.KuGMI.lowestEstimateBin[*i],swathx.KuGMI.phaseBinNodes[*i][4]);
+  //swathx.KuGMI.estimSurfPrecipTotWaterCont[*i]=missing_r4c;
+ //swathx.KuGMI.estimSurfPrecipLiqWaterCont[*i]=missing_r4c;
 }
 
 /*
@@ -151,7 +164,9 @@ void estimated_sfc_precip2_(int *i, float *pRate1d, float *pRateStd1d, float *sf
   if(*flagScanPattern==0 &&(*i<11 || *i>37))
     {
       swathx.KuKaGMI.estimSurfPrecipTotRate[*i]=missing_r4c;
+      swathx.KuKaGMI.estimSurfPrecipLiqRate[*i]=missing_r4c;
       swathx.KuKaGMI.estimSurfPrecipTotRateSigma[*i]=missing_r4c;
+      swathx.KuKaGMI.FLG.estimPrecipInClutter[*i]=missing_i2c;
       return;
     }
   swathx.KuKaGMI.lowestUnclutteredBin[*i]=swathx.KuKaGMI.phaseBinNodes[*i][4];
@@ -226,6 +241,14 @@ void estimated_sfc_precip2_(int *i, float *pRate1d, float *pRateStd1d, float *sf
       swathx.KuKaGMI.estimSurfPrecipTotRateSigma[*i]=0;
       swathx.KuKaGMI.FLG.estimPrecipInClutter[*i]=0;
     }
- 
+
+  if(swathx.KuKaGMI.estimSurfPrecipTotRate[*i]<0)
+    swathx.KuKaGMI.estimSurfPrecipTotRate[*i]=missing_r4c;
+  if(swathx.KuKaGMI.estimSurfPrecipLiqRate[*i]<0)
+    swathx.KuKaGMI.estimSurfPrecipLiqRate[*i]=missing_r4c;
+  if(swathx.KuKaGMI.estimSurfPrecipTotRateSigma[*i]<0)
+    swathx.KuKaGMI.estimSurfPrecipTotRateSigma[*i]=missing_r4c;
+  //  swathx.KuKaGMI.estimSurfPrecipTotWaterCont[*i]=missing_r4c;
+  //swathx.KuKaGMI.estimSurfPrecipLiqWaterCont[*i]=missing_r4c;
 }
 
