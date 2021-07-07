@@ -204,6 +204,8 @@ SUBROUTINE single_verify (ilen, file_name, orbit, date, algorithm, status)
     orbit = 0
     algorithm = ' '
 
+    print*, 'In single_verify()'
+    print*, 'File ',file_name(1:ilen)
 !...Check file availability
     nil_checker = TRANSFER(file_name,nil_checker)
     IF (nil_checker .NE. 'nil') THEN

@@ -18,7 +18,7 @@ void readcluttertables_(void)
   fout=fopen("AncData/cluttCorectTables.txt","r");
   for(i=0; i<39;i++)
     for(j=0;j<50;j++)
-      fscanf(fout,"%g",&pRateCCTables[i][j]);
+      fscanf(fout,"%g",&pRateCCTables[38-i][j]);
   fclose(fout);
   foutD=fopen("cluttCorectDiag.txt","w");
 }
@@ -38,28 +38,39 @@ void estimated_sfc_precip1_(int *i, float *pRate1d, float *pRateStd1d, float *sf
       int n2;
       itop=*cfb-0-130;
       ibott=(*sfc+1)*2-1-130;
+      printf("isfc=%i %i\n",*sfc,*cfb);
       fzClass=*bzd-128;
-     if (fzClass>49) fzClass=49;
-     if(itop>=0 && itop<39 && fzClass>=0 && fzClass<50)
+      if (fzClass>49) fzClass=49;
+      if(itop>=0 && itop<39 && fzClass>=0 && fzClass<50)
 	{
 	  int ik=0;
-	  while(ik+itop<39 && (int)((ik+itop+130)/2)<*sfc)
+	  while(-ik+itop>=0 && (int)((ik+itop+130)/2)<*sfc)
 	    {
-	      pRateCS[ik]=pRateCCTables[itop+ik][fzClass];
+	      pRateCS[ik]=pRateCCTables[itop-ik][fzClass];
 	      ik++;
 	    }
 	  if(ik>0) ik-=1;
 	  int n1=(int) (ik);
 	  n2=(int) ((ik)/2);
 	  swathx.KuGMI.lowestEstimateBin[*i]=(int)((ik+itop+130)/2);
-	  int dRange=(int)((ik+itop+130)/2-(*bzd)/2);
+	  int dRange=(int)(*sfc-(*bzd)/2);
 	  liqFractR=*liqFract;
 	  if(dRange>=4)
 	    liqFractR=1;
 	  else
-	    if(dRange>=0)
-	      liqFractR=dRange/4;
-	  if(pRateCS[0]>0.1)
+	    if(dRange>=0 && dRange<4)
+	      liqFractR=dRange/4.0;
+	  printf("isfc=%i %i %g %g %g %g %g %i bzd=%i, fract=%g\n",
+		 *sfc,*cfb,pRateCS[0],pRateCS[n1],
+		 pRateCS[n1]/pRateCS[0]*pRate1d[(int)(*cfb/2)-1],\
+		 pRateCS[n1]/pRateCS[0]*pRate1d[(int)(*cfb/2)-1]*liqFractR, 
+		 swathx.KuGMI.nearSurfPrecipTotRate[*i], n1,*bzd,liqFractR);
+	  //printf("itop=%i fzClass%i\n",itop,fzClass);
+	  int k;
+	  //for(k=0;k<itop;k++)
+	  //  printf("%g ",pRateCCTables[k][fzClass]);
+	  //printf("\n");
+	  if(pRateCS[0]>0.0001)
 	    {
 	      est_Surf_Precip=pRateCS[n1]/pRateCS[0]*pRate1d[(int)(*cfb/2)-1];
 	      swathx.KuGMI.estimSurfPrecipTotRate[*i]=est_Surf_Precip;
@@ -181,24 +192,24 @@ void estimated_sfc_precip2_(int *i, float *pRate1d, float *pRateStd1d, float *sf
       if(itop>=0 && itop<39 && fzClass>=0 && fzClass<50)
 	{
 	  int ik=0;
-	  while(ik+itop<39 && (int)((ik+itop+130)/2)<*sfc)
+	  while(-ik+itop>=0 && (int)((ik+itop+130)/2)<*sfc)
 	    {
-	      pRateCS[ik]=pRateCCTables[itop+ik][fzClass];
+	      pRateCS[ik]=pRateCCTables[itop-ik][fzClass];
 	      ik++;
 	    }
 	  if(ik>0) ik-=1;
 	  int n1=(int) (ik);
 	  n2=(int) ((ik)/2);
 	  swathx.KuKaGMI.lowestEstimateBin[*i]=(int)((ik+itop+130)/2);
-	  int dRange=(int)((ik+itop+130)/2-(*bzd)/2);
+	  int dRange=(int)(*sfc-(*bzd)/2);
 	  liqFractR=*liqFract;
 	  if(dRange>=4)
 	    liqFractR=1;
 	  else
-	    if(dRange>=0)
-	      liqFractR=dRange/4;
+	    if(dRange>=0 && dRange<4)
+	      liqFractR=dRange/4.0;
 
-	  if(pRateCS[0]>0.1)
+	  if(pRateCS[0]>0.0001)
 	    {
 	      est_Surf_Precip=pRateCS[n1]/pRateCS[0]*pRate1d[(int)(*cfb/2)-1];
 	      swathx.KuKaGMI.estimSurfPrecipTotRate[*i]=est_Surf_Precip;
