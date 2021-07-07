@@ -312,9 +312,7 @@ subroutine radarRetSub1(nmu2,  nmfreq2,   icL, tbRgrid,               &
   real :: realOut(49)
  ! real :: w10(49,300), w10_out_NS(49,300), w10_out_MS(49,300), w10_min, w10_max, emis, relAz
  ! real :: w10_rms_NS(49,300), emis_rms_NS(49,300,13), w10_rms_MS(49,300), emis_rms_MS(49,300,13)
-  real :: dZms(49,300) !! MS addition Feb 10, 2017
-  integer :: msFlag(49, 300) !!WSO addition Feb 11, 2017
-!begin  WSO 2/8/17 new variables
+ !begin  WSO 2/8/17 new variables
   integer :: multiscatcalc_NS(49, 300), multiscatcalc_MS(49, 300)
   integer :: algotype_NS(49, 300), algotype_MS(49, 300)
   integer :: profclass_NS(49, 300), profclass_MS(49, 300)

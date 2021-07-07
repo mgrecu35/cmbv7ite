@@ -71,8 +71,8 @@ subroutine radarRetSub4_FS(nmu2,  nmfreq2,   icL, tbRgrid,               &
   real :: realOut(49)
   !real :: w10(49,300), w10_out_NS(49,300), w10_out_MS(49,300), w10_min, w10_max, emis, relAz
   !real :: w10_rms_NS(49,300), emis_rms_NS(49,300,13), w10_rms_MS(49,300), emis_rms_MS(49,300,13)
-  real :: dZms(49,300) !! MS addition Feb 10, 2017
-  integer :: msFlag(49, 300) !!WSO addition Feb 11, 2017
+  !real :: dZms(49,300) !! MS addition Feb 10, 2017
+  !integer :: msFlag(49, 300) !!WSO addition Feb 11, 2017
 !begin  WSO 2/8/17 new variables
   integer :: multiscatcalc_NS(49, 300), multiscatcalc_MS(49, 300)
   integer :: algotype_NS(49, 300), algotype_MS(49, 300)
@@ -1052,6 +1052,8 @@ do j=1,dPRData%n1c21
          call copysubfootvariabilitys1_fs(subfootvariability_NS(i, j), i-1)
          call copymultiscatcalcs1_fs(multiscatcalc_NS(i, j), i-1)
          call copymultiscatsurfaces1_fs(multiscatsurface_NS(i, j), i-1)
+         call copymultiscatcalcs1_fs(msFlag(i, j), i-1)
+         call copymultiscatsurfaces1_fs(dZms(i, j), i-1)
          !--fs_300--!
          !call copyinitnws1_fs_300(j-1,initnw_NS(:, i, j), dPRRet%n9(:, i, j), i-1)
          !call copyprincomps1_fs_300(j-1,princomp_NS(:, i, j), i-1)
@@ -1395,6 +1397,10 @@ do j=1,dPRData%n1c21
         call copysubfootvariabilitys2_fs(subfootvariability_MS(i, j), i-1)
         call copymultiscatcalcs2_fs(multiscatcalc_MS(i, j), i-1)
         call copymultiscatsurfaces2_fs(multiscatsurface_MS(i, j), i-1)
+        if((i.gt.12 .and. i.lt.38).or.(flagScanPattern.eq.1)) then
+           call copymultiscatcalcs2_fs(msFlag(i, j), i-1)
+           call copymultiscatsurfaces2_fs(dZms(i, j), i-1)
+        endif
         call copycldwaters2_fs(cldwprof, i-1)
         cldiprof = missing_r4
         call copycldices2_fs(cldiprof,i-1)
