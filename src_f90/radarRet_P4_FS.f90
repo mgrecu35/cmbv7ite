@@ -1270,9 +1270,12 @@ do j=1,dPRData%n1c21
             dPRData%OEchiSq(i,j)=missing_r4
             dPRData%OEsimTbNonRain(:,i,j)=missing_r4
             dPRData%OEemisA(:,i,j)=missing_r4
+            dPRData%OEemis(:,i,j)=missing_r4
+            dPRData%OEemisSigma(:,i,j)=missing_r4
             dPRData%OEstype(i,j)=missing_r4
             dPRData%dsrtsigmaPIAka(i, j)=missing_r4
             dPRData%OECloudLiqPath(i,j)=missing_r4
+            dPRData%OEpiaNonRain(:,i,j)=missing_r4
          endif
          call copy_oepianonrain_kukagmi(dPRData%OEpiaNonRain(:,i,j), i-1)
          call copy_oeqv_kukagmi(dPRData%OEQv(:,i,j),env_nodes(:,i), i-1)

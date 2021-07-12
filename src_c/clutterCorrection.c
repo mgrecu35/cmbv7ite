@@ -38,7 +38,7 @@ void estimated_sfc_precip1_(int *i, float *pRate1d, float *pRateStd1d, float *sf
       int n2;
       itop=*cfb-0-130;
       ibott=(*sfc+1)*2-1-130;
-      printf("isfc=%i %i\n",*sfc,*cfb);
+      //printf("isfc=%i %i\n",*sfc,*cfb);
       fzClass=*bzd-128;
       if (fzClass>49) fzClass=49;
       if(itop>=0 && itop<39 && fzClass>=0 && fzClass<50)
@@ -60,11 +60,11 @@ void estimated_sfc_precip1_(int *i, float *pRate1d, float *pRateStd1d, float *sf
 	  else
 	    if(dRange>=0 && dRange<4)
 	      liqFractR=dRange/4.0;
-	  printf("isfc=%i %i %g %g %g %g %g %i bzd=%i, fract=%g\n",
+	  /*printf("isfc=%i %i %g %g %g %g %g %i bzd=%i, fract=%g\n",
 		 *sfc,*cfb,pRateCS[0],pRateCS[n1],
 		 pRateCS[n1]/pRateCS[0]*pRate1d[(int)(*cfb/2)-1],\
 		 pRateCS[n1]/pRateCS[0]*pRate1d[(int)(*cfb/2)-1]*liqFractR, 
-		 swathx.KuGMI.nearSurfPrecipTotRate[*i], n1,*bzd,liqFractR);
+		 swathx.KuGMI.nearSurfPrecipTotRate[*i], n1,*bzd,liqFractR);*/
 	  //printf("itop=%i fzClass%i\n",itop,fzClass);
 	  int k;
 	  //for(k=0;k<itop;k++)
