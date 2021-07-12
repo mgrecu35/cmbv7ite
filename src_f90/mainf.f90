@@ -180,12 +180,20 @@ subroutine mainfort(jobname, f1ctmi1,f1ctmi2,f1ctmi3,                    &
   call readdmnw()
 
 !  SFM  start  11/18/2013
-  nMemb=5
+  nMemb=10
 !  SFM  end    11/18/2013
   ifdpr(1:1)='N'
   
 !...Check file availability for processing
     !print*, 
+!goto 103
+
+!SUBROUTINE file_check (igmi1, igmi2, igmi3, i2aku, i2adpr, i2akuenv, isnow,    &
+!                       iseaice, i2cmb, file_gmi1, file_gmi2, file_gmi3,        &
+!		       file_2adpr, file_2akuenv, file_2aku, file_snow,         &
+!		       file_seaice, file_2cmb, stat_gmi1, stat_gmi2,           &
+!		       stat_gmi3, stat_2akuenv, stat_2adpr, stat_2aku,         &
+!		       stat_snow, stat_seaice, stat_cmb, main_date, main_orbit)
     CALL file_check(igmi1, igmi2, igmi3, i2aku, i2adpr, i2akuenv, isnow, iseaice,  &
                     i2cmb, f1ctmi1(1:igmi1), f1ctmi2(1:igmi2), f1ctmi3(1:igmi3),   &
 		    f2adpr(1:i2adpr), f2akuenv(1:i2akuenv), f2aku(1:i2aku),        &
@@ -193,8 +201,10 @@ subroutine mainfort(jobname, f1ctmi1,f1ctmi2,f1ctmi3,                    &
 		    st_1, st_2, st_3, st_2akuenv, st_2adpr, st_2aku, st_snow,      &
 		    st_seaice, st_cmb, date_number, orbitNumber)
 
-!  SFM  start  01/02/2014  reworked checks for nil and dead files
+103 continue
 
+!  SFM  start  01/02/2014  reworked checks for nil and dead files
+      print*, 'here'
 !  Open output file
   IF (st_cmb .NE. 0) THEN
       IF (st_cmb .EQ. -1) PRINT *,'WARNING: 2CMB directory NOT available'
@@ -491,11 +501,11 @@ subroutine mainfort(jobname, f1ctmi1,f1ctmi2,f1ctmi3,                    &
    WRITE(UNIT=*,FMT=500) st_2aku, st_2adpr, st_1, st_2, st_3, st_2akuenv,      &
                          st_snow, st_seaice
 500 FORMAT('File read status ALLof : ',8I5)
-   call meta_for_outputfile(fSNOW(iSNOW1:iSNOW), fSEAICE(iSEAICE1:iSEAICE),    &
-                            orbitNumber, rseed1, rseed2, algorithmVersion,     &
-			    ABS(st_1), ABS(st_2), ABS(st_3), ABS(st_2akuenv),  &
-			    ABS(st_2aku), ABS(st_2adpr), ABS(st_snow),         &
-			    ABS(st_seaice))
+  call meta_for_outputfile(fSNOW(iSNOW1:iSNOW), fSEAICE(iSEAICE1:iSEAICE),    &
+       orbitNumber, rseed1, rseed2, algorithmVersion,     &!
+       ABS(st_1), ABS(st_2), ABS(st_3), ABS(st_2akuenv),  &
+       ABS(st_2aku), ABS(st_2adpr), ABS(st_snow),         &
+       ABS(st_seaice))
 !  SFM  end  01/02/2014
 
    

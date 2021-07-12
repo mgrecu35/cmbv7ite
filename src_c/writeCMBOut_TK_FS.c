@@ -104,7 +104,8 @@ void setlatlons1_fs_(float *lat, float *lon, float *sfcPrecip,
 }
 
 void setlatlons2_fs_(float *lat, float *lon, float *sfcPrecip, 
-                  float *sfcPrecipStd, float *piaOutKu, float *piaOutKa)
+		     float *sfcPrecipStd, float *piaOutKu, float *piaOutKa,
+		     int *scanPatternFlag)
 {
   int i;
   extern L2BCMB_SWATHS swathx;
@@ -119,7 +120,40 @@ void setlatlons2_fs_(float *lat, float *lon, float *sfcPrecip,
       swathx.KuKaGMI.nearSurfPrecipTotRateSigma[i]=sfcPrecipStd[i];
       swathx.KuKaGMI.pia[i][0]=piaOutKu[i];
       swathx.KuKaGMI.pia[i][1]=piaOutKa[i];
+      if( *scanPatternFlag==0 && (i<12 || i>=37))
+	{
+	  swathx.KuKaGMI.Latitude[i]=missing_r4c;
+	  swathx.KuKaGMI.Longitude[i]=missing_r4c;
+	  swathx.KuKaGMI.nearSurfPrecipTotRate[i]=missing_r4c;
+	  swathx.KuKaGMI.nearSurfPrecipTotRateSigma[i]=missing_r4c;
+	  swathx.KuKaGMI.pia[i][0]=missing_r4c;
+	  swathx.KuKaGMI.pia[i][1]=missing_r4c;
+	}
     }
+}
+
+void copy_oe_missing_staff_(int *i)
+{int k;
+extern L2BCMB_SWATHS swathx;
+swathx.KuGMI.OptEst.OEestimSurfPrecipLiqRate[*i]=missing_r4c;
+swathx.KuGMI.OptEst.OEestimSurfPrecipTotRate[*i]=missing_r4c;
+swathx.KuKaGMI.OptEst.OEestimSurfPrecipLiqRate[*i]=missing_r4c;
+swathx.KuKaGMI.OptEst.OEestimSurfPrecipTotRate[*i]=missing_r4c;
+swathx.KuKaGMI.OptEst.OEestimSurfPrecipTotRateSigma[*i]=missing_r4c;
+swathx.KuGMI.OptEst.OEestimSurfPrecipTotRateSigma[*i]=missing_r4c;
+}
+
+
+void copy_oecloudicepath_kugmi_(float *OECloudLiqPath, int *i)
+{int k;
+extern L2BCMB_SWATHS swathx;
+swathx.KuGMI.OptEst.OEcolumnCloudIceWater[*i]=missing_r4c;
+}
+
+void copy_oecloudicepath_kukagmi_(float *OECloudLiqPath, int *i)
+{int k;
+extern L2BCMB_SWATHS swathx;
+swathx.KuKaGMI.OptEst.OEcolumnCloudIceWater[*i]=missing_r4c;
 }
 
 void copyrrates1_fs_(float *rrate, float *rratestd, int *i)
@@ -668,7 +702,7 @@ void frominput_fs_(long *st_2adpr, int *flagScanPattern)
       swathx.KuGMI.Input.zeroDegAltitude[j] = L2AKuDataX.VER.heightZeroDeg[j];
       swathx.KuGMI.Input.zeroDegBin[j] = (L2AKuDataX.VER.binZeroDeg[j]-1)/2; // MG 04/11/2014
 //end    WSO 8/19/13
-      if(j>=0 && j<49)
+      if((j>=0 && j<49 &&  *flagScanPattern==1) || (j>=12 && j<37))
 	{
 	  swathx.KuKaGMI.Input.surfaceElevation[j]=
 	    L2AKuDataX.PRE.elevation[j];
@@ -725,8 +759,35 @@ void frominput_fs_(long *st_2adpr, int *flagScanPattern)
           swathx.KuKaGMI.Input.zeroDegAltitude[j] =
             L2AKuDataX.VER.heightZeroDeg[j];
           swathx.KuKaGMI.Input.zeroDegBin[j][0] =
+            (L2AKuDataX.VER.binZeroDeg[j]-1)/2;   // MG 04/11/2014]
+	  swathx.KuKaGMI.Input.zeroDegBin[j][1] =
             (L2AKuDataX.VER.binZeroDeg[j]-1)/2;   // MG 04/11/2014
 //end    WSO 8/19/13
+	}
+      else
+	{
+	  swathx.KuKaGMI.Input.surfaceElevation[j]=missing_r4c;
+	  swathx.KuKaGMI.Input.localZenithAngle[j]=missing_r4c;
+	  swathx.KuKaGMI.Input.surfaceType[j]=missing_i2c;
+	  swathx.KuKaGMI.Input.surfaceRangeBin[j][0]=missing_i2c;
+	  swathx.KuKaGMI.Input.surfaceRangeBin[j][1]=missing_i2c;
+	  swathx.KuKaGMI.Input.stormTopBin[j][0]=missing_i2c;
+	  swathx.KuKaGMI.Input.stormTopBin[j][1]=missing_i2c;
+	  swathx.KuKaGMI.Input.stormTopAltitude[j][0]=missing_r4c;
+	  swathx.KuKaGMI.Input.stormTopAltitude[j][1]=missing_r4c;
+	  swathx.KuKaGMI.Input.lowestClutterFreeBin[j][0]=missing_i2c;
+	  swathx.KuKaGMI.Input.lowestClutterFreeBin[j][1]=missing_i2c;
+	  swathx.KuKaGMI.Input.ellipsoidBinOffset[j][0]=missing_i2c;
+	  swathx.KuKaGMI.Input.ellipsoidBinOffset[j][1]=missing_i2c;
+	  swathx.KuKaGMI.Input.piaEffective[j][0]=missing_r4c; 
+	  swathx.KuKaGMI.Input.piaEffective[j][1]=missing_r4c; 
+	  swathx.KuKaGMI.Input.piaEffectiveReliabFlag[j][0]=missing_i2c;
+	  swathx.KuKaGMI.Input.piaEffectiveReliabFlag[j][1]=missing_i2c;
+	  swathx.KuKaGMI.Input.precipitationType[j]=missing_i4c;
+	  swathx.KuKaGMI.Input.precipTypeQualityFlag[j]=missing_i2c;
+          swathx.KuKaGMI.Input.zeroDegAltitude[j] =missing_r4c;
+          swathx.KuKaGMI.Input.zeroDegBin[j][0] =missing_i2c;
+          swathx.KuKaGMI.Input.zeroDegBin[j][1] =missing_i2c;
 	}
 //diagnostic assignment
       //dummyPIA[j] = dprxswath.FS.SRT.pathAtten[j];

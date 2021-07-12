@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
   int nchunk=ndpr/300;
   printf("nchunk = %d\n",nchunk);
   //nchunk=1;
-  nchunk=3;
+  nchunk=2;
   for(i=0;i<=nchunk;i++)
     {
       if(ifs==1)
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
       else
 	do_chunk_(&i,&one,&idir);
       icL=i*300;
-      //if(i<=3)
+      if(i==2)
       {
 	printf("GMIretsub\n");
 	gmiretsub_(&icL, &i, &orbNumb, &ialg, &idir);

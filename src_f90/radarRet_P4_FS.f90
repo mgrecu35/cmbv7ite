@@ -1025,7 +1025,8 @@ do j=1,dPRData%n1c21
       call setlatlons1_fs( dPRData%xlat(:,j), dPRData%xlon(:,j),                &
            sfcRain(:,j),sfcRainStd(:,j),piaOut(:,j))
       call setlatlons2_fs( dPRData%xlat(:,j), dPRData%xlon(:,j),                 &
-           sfcRainMS(:,j),sfcRainStdMS(:,j),piaOutKuMS(:,j),piaOutKaMS(:,j))
+           sfcRainMS(:,j),sfcRainStdMS(:,j),piaOutKuMS(:,j),piaOutKaMS(:,j),&
+           flagScanPattern)
       !call setlatlons1_fs_300(j-1, dPRData%xlat(:,j), dPRData%xlon(:,j),          &
       !     sfcRain(:,j),sfcRainStd(:,j),piaOut(:,j))
       !call setlatlons2_fs_300(j-1, dPRData%xlat(:,j), dPRData%xlon(:,j),             &
@@ -1232,9 +1233,8 @@ do j=1,dPRData%n1c21
          call copyerrorofdatafits1_fs(errorofdatafit_NS(i, j), i-1)
 ! insert new IO here
          call copy_oepianonrain_kugmi(dPRData%OEpiaNonRain(:,i,j), i-1)
-         call copy_oepianonrain_kukagmi(dPRData%OEpiaNonRain(:,i,j), i-1)
          call copy_oecloudliqpath_kugmi(dPRData%OECloudLiqPath(i,j), i-1)
-         call copy_oecloudliqpath_kukagmi(dPRData%OECloudLiqPath(i,j), i-1)
+         call copy_oecloudicepath_kugmi(dPRData%OECloudLiqPath(i,j), i-1)
          call copy_oeqv_kugmi(dPRData%OEQv(:,i,j),env_nodes(:,i), i-1)
          call copy_oetemp_kugmi(dPRData%OETemp(:,i,j),env_nodes(:,i), i-1)
          call copy_oecloud_kugmi(dPRData%OECloud(:,i,j), i-1)
@@ -1253,9 +1253,33 @@ do j=1,dPRData%n1c21
          call copy_oeemissigma_kugmi(dPRData%OEemisSigma(:,i,j), i-1)
          call copy_oeemisa_kugmi(dPRData%OEemisA(:,i,j), i-1)
          call copy_oestype_kugmi(dPRData%OEstype(i,j), i-1)
+         if ((flagScanPattern.eq.0).and.(i.le.12.or.i.ge.37)) then
+            dPRData%OEQv(:,i,j)=missing_r4
+            dPRData%OETemp(:,i,j)=missing_r4
+            dPRData%OEcloudLiqSigma(i,j)=missing_r4
+            dPRData%OEcloudLiqPath(i,j)=missing_r4
+            dPRData%OEcloud(:,i,j)=missing_r4
+            dPRData%OESfcWind(i,j)=missing_r4
+            dPRData%OESfcWindSigma(i,j)=missing_r4
+            dPRData%OESknTemp(i,j)=missing_r4
+            dPRData%OEskinTempSigma(i,j)=missing_r4
+            dPRData%OESfcTemp(i,j)=missing_r4
+            dPRData%OESfcQv(i,j)=missing_r4
+            dPRData%OEtpw(i,j)=missing_r4
+            dPRData%OEtpwSigma(i,j)=missing_r4
+            dPRData%OEchiSq(i,j)=missing_r4
+            dPRData%OEsimTbNonRain(:,i,j)=missing_r4
+            dPRData%OEemisA(:,i,j)=missing_r4
+            dPRData%OEstype(i,j)=missing_r4
+            dPRData%dsrtsigmaPIAka(i, j)=missing_r4
+            dPRData%OECloudLiqPath(i,j)=missing_r4
+         endif
+         call copy_oepianonrain_kukagmi(dPRData%OEpiaNonRain(:,i,j), i-1)
          call copy_oeqv_kukagmi(dPRData%OEQv(:,i,j),env_nodes(:,i), i-1)
          call copy_oetemp_kukagmi(dPRData%OETemp(:,i,j),env_nodes(:,i), i-1)
          call copy_oecloud_kukagmi(dPRData%OECloud(:,i,j), i-1)
+         call copy_oecloudicepath_kukagmi(dPRData%OECloudLiqPath(i,j), i-1)
+         call copy_oecloudliqpath_kukagmi(dPRData%OECloudLiqPath(i,j), i-1)
          call copy_oecloudliqsigma_kukagmi(dPRData%OEcloudLiqSigma(i,j), i-1)
          call copy_oesfcwind_kukagmi(dPRData%OESfcWind(i,j), i-1)
          call copy_oesfcwindsigma_kukagmi(dPRData%OESfcWindSigma(i,j), i-1)
@@ -1271,7 +1295,7 @@ do j=1,dPRData%n1c21
          call copy_oeemissigma_kukagmi(dPRData%OEemisSigma(:,i,j), i-1)
          call copy_oeemisa_kukagmi(dPRData%OEemisA(:,i,j), i-1)
          call copy_oestype_kukagmi(dPRData%OEstype(i,j), i-1)
-
+         call copy_oe_missing_staff(i-1);
 
          !--fs_300--!
          !call copylognws1_fs_300(j-1, log10NwMean,dPRRet%n9(:,i,j),i-1)
@@ -1385,6 +1409,52 @@ do j=1,dPRData%n1c21
          !call copysfcemissouts1sigma_300(j-1,emis_rms_NS(i,j,:),i-1)
          !--fs_300--!
       endif
+      if((flagScanPattern.eq.0).and.(i.le.12.or.i.ge.38)) then
+         dPRData%rainFlagBad(i,j)=missing_r4
+         dPRData%ioqualityflagdpr(i,j)=missing_r4
+         dPRData%snowIceCover(i,j)=missing_r4
+         initnw_MS(:, i, j)=missing_r4
+         princomp_MS(:, i, j)=missing_r4
+         profclass_MS(i, j)=missing_i2
+         surfprecipbiasratio_MS(i, j)=missing_r4
+         subfootvariability_MS(i, j)=missing_r4
+         multiscatcalc_MS(i, j)=missing_r4
+         multiscatsurface_MS(i, j)=missing_r4
+         msFlag(i, j)=missing_i2
+         dZms(i, j)=missing_r4
+         cldwprof=missing_r4
+         cldiprof=missing_r4
+         zcKu3DMS(:,i,j)=missing_r4
+         dPRData%dsrtsigmaPIAku(i, j)=missing_r4
+         dPRData%sigmaZeroKu(i, j)=missing_r4
+         dPRData%sigmaZeroKa(i, j)=missing_r4
+         !dPRData%dsrtsigmaPIAku(i, j)=missing_r4
+         dPRData%dsrtsigmaPIAka(i, j)=missing_r4
+         !dPRData%sigmaZeroKu(i, j)=missing_r4
+         log10NwMean=missing_r4
+         mu_mean_prof=missing_r4
+         dPRRet%n9(:,i,j)=missing_i4
+         rrate3DMS(:,i,j)=missing_r4
+         pwc3DMS(:,i,j)=missing_r4
+         mlwc_fracMS(:,i,j)=missing_r4
+         sfcRainMS(i,j)=missing_r4
+         d03DMS(:,i,j)=missing_r4
+         dPRData%node(:,i,j)=missing_r4
+         dPRData%envTemp(:,i,j)=missing_r4
+         dPRData%envSfcTemp(i,j)=missing_r4
+         dPRData%envPress(:,i,j)=missing_r4
+         dPRData%envSfcPress(i,j)=missing_r4
+         dPRData%envQv(:,i,j)=missing_r4
+         dPRData%envQv(:,i,j)=missing_r4
+         dPRData%envSknTemp(i,j)=missing_r4
+         skintempsigma_MS(i, j)=missing_r4
+         columnvaporsigma_MS(i, j)=missing_r4
+         columncloudliqsigma_MS(i, j)=missing_r4
+         algotype_MS(i, j)=missing_r4
+         errorofdatafit_MS(i, j)=missing_r4
+         tbout=missing_r4
+         emissoutL(i,j,:)=missing_r4
+      endif
       if(i>0 .and. i<50 .and. ialg==1) then
 !begin  WSO 9/28/13 add rain flag including missing for bad scans
         call copyrainflags2_fs(dPRData%rainFlagBad(i,j), i-1, flagScanPattern)
@@ -1427,7 +1497,7 @@ do j=1,dPRData%n1c21
         !call copysigmazeros2_fs_300(j-1,dPRData%sigmaZeroKu(i, j), dPRData%sigmaZeroKa(i, j), i-1)
         !--fs_300--!
 !begin  WSO 8/19/13 change dNw to Nw and add mu
-         if(dPRData%rainType(i,j)>=100) then
+        if(dPRData%rainType(i,j)>=100) then
             do k=1,88
                if(k>=dPRData%node(1,i,j).and.k<=dPRData%node(5,i,j)) then
                   log10NwMean(k)=sum(dPRRet%MS%log10dNw(1:nmemb1,k,i,j))/nmemb1 + &
@@ -1552,7 +1622,11 @@ do j=1,dPRData%n1c21
              emissoutL(i,j,k) = min(max(emissoutL(i,j,k), surfEmissivity_min), surfEmissivity_max)
            endif
          enddo
-
+         if((flagScanPattern.eq.0).and.(i.le.12.or.i.ge.38)) then
+            tbout=missing_r4
+            emissoutL(i,j,:)=missing_r4
+            emis_rms_MS(i,j,:)=missing_r4
+         endif
          call copysfcemissouts2_fs(emissoutL(i,j,:),i-1)
          call copysfcemissouts2sigma_fs(emis_rms_MS(i,j,:),i-1)
          !--fs_300--!
@@ -1590,7 +1664,7 @@ do j=1,dPRData%n1c21
          !call copytbouts1_fs_300(j-1,tbout,i-1)
       endif
 !!begin MG 09172013
-      if(i>1 .and. i<49) then
+      if(i>=1 .and. i<=49) then
          do k=1,9
             if(tbout2dMS(i,j,k)>0) then
                tbout(k)=tbout2dMS(i,j,k)!-tbRgrid(k,i,j+icL)
@@ -1602,6 +1676,9 @@ do j=1,dPRData%n1c21
          tbout(11)=sum(dPRRet%MS%tb(i,j,2,6,1:1*nmemb1))/(nmemb1)
          tbout(12)=sum(dPRRet%MS%tb(i,j,1,7,1:1*nmemb1))/(nmemb1)
          tbout(13)=sum(dPRRet%MS%tb(i,j,1,8,1:1*nmemb1))/(nmemb1)
+         if((flagScanPattern.eq.0).and.(i.le.12.or.i.ge.38)) then
+            tbout=missing_r4
+         endif
          call copytbouts2_fs(tbout,i-1)
          !--fs_300--!
          !call copytbouts2_fs_300(j-1,tbout,i-1)

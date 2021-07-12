@@ -1,0 +1,21 @@
+src_f90/f90DataTypes.f90:     real, dimension(:,:,:), pointer :: OEQv !OptEst/vaporDensity
+src_f90/f90DataTypes.f90:     real, dimension(:,:,:), pointer :: OETemp !OptEst/airTemperature
+src_f90/f90DataTypes.f90:     real, dimension(:,:,:), pointer :: OECloud !OptEst/cloudLiqWaterCont
+src_f90/f90DataTypes.f90:     real, dimension(:,:), pointer :: OECloudLiqPath !OptEst/columnCloudLiqWater
+src_f90/f90DataTypes.f90:     real, dimension(:,:), pointer :: OEcloudLiqSigma !OptEst/columnCloudLiqSigma
+src_f90/f90DataTypes.f90:     real, dimension(:,:), pointer   :: OESfcWind !OptEst/tenMeterWindSpeed
+src_f90/f90DataTypes.f90:     real, dimension(:,:), pointer   :: OESfcWindSigma !OptEst/tenMeterWindSigma
+src_f90/f90DataTypes.f90:     real, dimension(:,:), pointer   :: OESknTemp !OptEst/skinTemperature
+src_f90/f90DataTypes.f90:     real, dimension(:,:), pointer :: OEskinTempSigma !OptEst/skinTempSigma
+src_f90/f90DataTypes.f90:     real, dimension(:,:), pointer   :: OESfcTemp !OptEst/surfaceAirTemperature
+src_f90/f90DataTypes.f90:     real, dimension(:,:), pointer   :: OESfcQv !OptEst/surfaceVaporDensity
+src_f90/f90DataTypes.f90:	 real, dimension(:,:), pointer :: OEtpw !OptEst/columnWaterVapor
+src_f90/f90DataTypes.f90:	 real, dimension(:,:), pointer :: OEtpwSigma !OptEst/columnVaporSigma
+src_f90/f90DataTypes.f90:     real, dimension(:,:), pointer :: OEchiSq !OptEst/errorOfDataFit
+src_f90/f90DataTypes.f90:     real, dimension(:,:,:), pointer :: OEpiaNonRain !OptEst/piaNoPrecip
+src_f90/f90DataTypes.f90:     real, dimension(:,:,:), pointer :: OEsimTbNonRain !OptEst/simulatedBrightTemp
+src_f90/f90DataTypes.f90:     real, dimension(:,:,:), pointer :: OEemis !OptEst/surfEmissivity
+src_f90/f90DataTypes.f90:     real, dimension(:,:,:), pointer :: OEemisSigma !OptEst/surfEmissSigma
+src_f90/f90DataTypes.f90:     real, dimension(:,:,:), pointer :: OEemisA !OptEst/emissivityAvgKernel
+src_f90/f90DataTypes.f90:     integer, dimension(:,:), pointer   :: OEstype !OptEst/surfaceClass
+
