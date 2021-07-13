@@ -502,10 +502,12 @@ void copy_tot_to_liqrate_kuka_(int *ij, float *precipTot, int *node, int *scanPa
  int i;
  extern L2BCMB_SWATHS swathx;
 
- if(*scanPatternFlag==0 &&(*ij<12 || *ij>36))
-   for(i=0;i<88;i++)
-     swathx.KuKaGMI.precipLiqRate[*ij][i]=missing_r4c;
- 
+ if(*scanPatternFlag==0 &&(*ij<12 || *ij>37))
+   {
+     for(i=0;i<88;i++)
+       swathx.KuKaGMI.precipLiqRate[*ij][i]=missing_r4c;
+     return;
+   }
  for(i=node[0];i<=node[1];i++)
    swathx.KuKaGMI.precipLiqRate[*ij][i]=0.0;
  int n3=node[3];
@@ -534,7 +536,7 @@ void copy_tot_to_liqwatercont_kuka_(int *ij, float *precipTot, int *node, int *s
  int i;
  extern L2BCMB_SWATHS swathx;
 
- if(*scanPatternFlag==0 &&(*ij<12 || *ij>36))
+ if(*scanPatternFlag==0 &&(*ij<12 || *ij>37))
    {
      for(i=0;i<88;i++)
        swathx.KuKaGMI.precipLiqWaterCont[*ij][i]=missing_r4c;

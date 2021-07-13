@@ -1136,6 +1136,8 @@ do j=1,dPRData%n1c21
          call copycldices1_fs(cldiprof,i-1)
          call copyrrates1_fs(rrate3D(:,i,j),rrate3Dstd(:,i,j),i-1)
          call copypwcs1_fs(pwc3D(:,i,j),pwc3Dstd(:,i,j),i-1)
+         call copy_tot_to_liqrate_ku(i-1, rrate3D(:,i,j), dPRData%node(:,i,j))
+         call copy_tot_to_liqwatercont_ku(i-1, pwc3D(:,i,j), dPRData%node(:,i,j))
          call copylwcfracs1_fs(mlwc_frac(:,i,j),mrate_frac(:,i,j),i-1)
          if(sfcRain(i,j).ge.-0.001) then
             call copysfcrainliqfracs1_fs(sfcRain(i,j)*sfcRainLiqFrac(i, j), i-1)
@@ -1253,52 +1255,31 @@ do j=1,dPRData%n1c21
          call copy_oeemissigma_kugmi(dPRData%OEemisSigma(:,i,j), i-1)
          call copy_oeemisa_kugmi(dPRData%OEemisA(:,i,j), i-1)
          call copy_oestype_kugmi(dPRData%OEstype(i,j), i-1)
-         if ((flagScanPattern.eq.0).and.(i.le.12.or.i.ge.37)) then
-            dPRData%OEQv(:,i,j)=missing_r4
-            dPRData%OETemp(:,i,j)=missing_r4
-            dPRData%OEcloudLiqSigma(i,j)=missing_r4
-            dPRData%OEcloudLiqPath(i,j)=missing_r4
-            dPRData%OEcloud(:,i,j)=missing_r4
-            dPRData%OESfcWind(i,j)=missing_r4
-            dPRData%OESfcWindSigma(i,j)=missing_r4
-            dPRData%OESknTemp(i,j)=missing_r4
-            dPRData%OEskinTempSigma(i,j)=missing_r4
-            dPRData%OESfcTemp(i,j)=missing_r4
-            dPRData%OESfcQv(i,j)=missing_r4
-            dPRData%OEtpw(i,j)=missing_r4
-            dPRData%OEtpwSigma(i,j)=missing_r4
-            dPRData%OEchiSq(i,j)=missing_r4
-            dPRData%OEsimTbNonRain(:,i,j)=missing_r4
-            dPRData%OEemisA(:,i,j)=missing_r4
-            dPRData%OEemis(:,i,j)=missing_r4
-            dPRData%OEemisSigma(:,i,j)=missing_r4
-            dPRData%OEstype(i,j)=missing_r4
-            dPRData%dsrtsigmaPIAka(i, j)=missing_r4
-            dPRData%OECloudLiqPath(i,j)=missing_r4
-            dPRData%OEpiaNonRain(:,i,j)=missing_r4
-         endif
-         call copy_oepianonrain_kukagmi(dPRData%OEpiaNonRain(:,i,j), i-1)
-         call copy_oeqv_kukagmi(dPRData%OEQv(:,i,j),env_nodes(:,i), i-1)
-         call copy_oetemp_kukagmi(dPRData%OETemp(:,i,j),env_nodes(:,i), i-1)
-         call copy_oecloud_kukagmi(dPRData%OECloud(:,i,j), i-1)
-         call copy_oecloudicepath_kukagmi(dPRData%OECloudLiqPath(i,j), i-1)
-         call copy_oecloudliqpath_kukagmi(dPRData%OECloudLiqPath(i,j), i-1)
-         call copy_oecloudliqsigma_kukagmi(dPRData%OEcloudLiqSigma(i,j), i-1)
-         call copy_oesfcwind_kukagmi(dPRData%OESfcWind(i,j), i-1)
-         call copy_oesfcwindsigma_kukagmi(dPRData%OESfcWindSigma(i,j), i-1)
-         call copy_oeskntemp_kukagmi(dPRData%OESknTemp(i,j), i-1)
-         call copy_oeskintempsigma_kukagmi(dPRData%OEskinTempSigma(i,j), i-1)
-         call copy_oesfctemp_kukagmi(dPRData%OESfcTemp(i,j), i-1)
-         call copy_oesfcqv_kukagmi(dPRData%OESfcQv(i,j), i-1)
-         call copy_oetpw_kukagmi(dPRData%OEtpw(i,j), i-1)
-         call copy_oetpwsigma_kukagmi(dPRData%OEtpwSigma(i,j), i-1)
-         call copy_oechisq_kukagmi(dPRData%OEchiSq(i,j), i-1)
-         call copy_oesimtbnonrain_kukagmi(dPRData%OEsimTbNonRain(:,i,j), i-1)
-         call copy_oeemis_kukagmi(dPRData%OEemis(:,i,j), i-1)
-         call copy_oeemissigma_kukagmi(dPRData%OEemisSigma(:,i,j), i-1)
-         call copy_oeemisa_kukagmi(dPRData%OEemisA(:,i,j), i-1)
-         call copy_oestype_kukagmi(dPRData%OEstype(i,j), i-1)
-         call copy_oe_missing_staff(i-1);
+         !print*, flagScanPattern, i, ((flagScanPattern.eq.0).and.(i.le.12.or.i.ge.38)) 
+
+
+         !call copy_oepianonrain_kukagmi(dPRData%OEpiaNonRain(:,i,j), i-1)
+         !call copy_oeqv_kukagmi(dPRData%OEQv(:,i,j),env_nodes(:,i), i-1)
+         !call copy_oetemp_kukagmi(dPRData%OETemp(:,i,j),env_nodes(:,i), i-1)
+         !call copy_oecloud_kukagmi(dPRData%OECloud(:,i,j), i-1)
+         !call copy_oecloudicepath_kukagmi(dPRData%OECloudLiqPath(i,j), i-1)
+         !call copy_oecloudliqpath_kukagmi(dPRData%OECloudLiqPath(i,j), i-1)
+         !call copy_oecloudliqsigma_kukagmi(dPRData%OEcloudLiqSigma(i,j), i-1)
+         !call copy_oesfcwind_kukagmi(dPRData%OESfcWind(i,j), i-1)
+         !call copy_oesfcwindsigma_kukagmi(dPRData%OESfcWindSigma(i,j), i-1)
+         !call copy_oeskntemp_kukagmi(dPRData%OESknTemp(i,j), i-1)
+         !call copy_oeskintempsigma_kukagmi(dPRData%OEskinTempSigma(i,j), i-1)
+         !call copy_oesfctemp_kukagmi(dPRData%OESfcTemp(i,j), i-1)
+         !call copy_oesfcqv_kukagmi(dPRData%OESfcQv(i,j), i-1)
+         !call copy_oetpw_kukagmi(dPRData%OEtpw(i,j), i-1)
+         !call copy_oetpwsigma_kukagmi(dPRData%OEtpwSigma(i,j), i-1)
+         !call copy_oechisq_kukagmi(dPRData%OEchiSq(i,j), i-1)
+         !call copy_oesimtbnonrain_kukagmi(dPRData%OEsimTbNonRain(:,i,j), i-1)
+         !call copy_oeemis_kukagmi(dPRData%OEemis(:,i,j), i-1)
+         !call copy_oeemissigma_kukagmi(dPRData%OEemisSigma(:,i,j), i-1)
+         !call copy_oeemisa_kukagmi(dPRData%OEemisA(:,i,j), i-1)
+         !call copy_oestype_kukagmi(dPRData%OEstype(i,j), i-1)
+         !
 
          !--fs_300--!
          !call copylognws1_fs_300(j-1, log10NwMean,dPRRet%n9(:,i,j),i-1)
@@ -1412,6 +1393,7 @@ do j=1,dPRData%n1c21
          !call copysfcemissouts1sigma_300(j-1,emis_rms_NS(i,j,:),i-1)
          !--fs_300--!
       endif
+      print*, flagScanPattern, i, j, rrate3DMS(:,i,j) 
       if((flagScanPattern.eq.0).and.(i.le.12.or.i.ge.38)) then
          dPRData%rainFlagBad(i,j)=missing_r4
          dPRData%ioqualityflagdpr(i,j)=missing_r4
@@ -1436,13 +1418,15 @@ do j=1,dPRData%n1c21
          !dPRData%sigmaZeroKu(i, j)=missing_r4
          log10NwMean=missing_r4
          mu_mean_prof=missing_r4
-         dPRRet%n9(:,i,j)=missing_i4
+         
          rrate3DMS(:,i,j)=missing_r4
+         rrate3DstdMS(:,i,j)=missing_r4
          pwc3DMS(:,i,j)=missing_r4
+         pwc3DstdMS(:,i,j)=missing_r4
          mlwc_fracMS(:,i,j)=missing_r4
          sfcRainMS(i,j)=missing_r4
          d03DMS(:,i,j)=missing_r4
-         dPRData%node(:,i,j)=missing_r4
+         
          dPRData%envTemp(:,i,j)=missing_r4
          dPRData%envSfcTemp(i,j)=missing_r4
          dPRData%envPress(:,i,j)=missing_r4
@@ -1480,25 +1464,6 @@ do j=1,dPRData%n1c21
         call copyzckus2_fs(zcKu3DMS(:,i,j), zcKa3DMS(:,i,j), i-1)
         call copysigmapias2_fs(dPRData%dsrtsigmaPIAku(i, j), dPRData%dsrtsigmaPIAka(i, j), i-1)
         call copysigmazeros2_fs(dPRData%sigmaZeroKu(i, j), dPRData%sigmaZeroKa(i, j), i-1)
-        !--fs_300--!
-        !call copyrainflags2_fs_300(j-1,dPRData%rainFlagBad(i,j), i-1)
-        !call copyioqualitys2_fs_300(j-1,dPRData%ioqualityflagdpr(i,j), i-1)
-        !call copysnowices2_fs_300(j-1,dPRData%snowIceCover(i,j), i-1)
-        !call copyinitnws2_fs_300(j-1,initnw_MS(:, i, j), dPRRet%n9(:, i, j), i-1)
-        !call copyprincomps2_fs_300(j-1,princomp_MS(:, i, j), i-1)
-        !call copyprofclasss2_fs_300(j-1,profclass_MS(i, j), i-1)
-        !call copysurfprecipbiasratios2_fs_300(j-1,surfprecipbiasratio_MS(i, j), i-1)
-        !call copysubfootvariabilitys2_fs_300(j-1,subfootvariability_MS(i, j), i-1)
-        !call copymultiscatcalcs2_fs_300(j-1,multiscatcalc_MS(i, j), i-1)
-        !call copymultiscatsurfaces2_fs_300(j-1,multiscatsurface_MS(i, j), i-1)
-        !call copycldwaters2_fs(j-1,cldwprof, i-1)
-        !cldiprof = missing_r4
-        !call copycldices2_fs_300(j-1,cldiprof,i-1)
-        !call copyzckus2_fs_300(j-1,zcKu3DMS(:,i,j), zcKa3DMS(:,i,j), i-1)
-        !call copysigmapias2_fs_300(j-1,dPRData%dsrtsigmaPIAku(i, j), &
-        !dPRData%dsrtsigmaPIAka(i, j), i-1)
-        !call copysigmazeros2_fs_300(j-1,dPRData%sigmaZeroKu(i, j), dPRData%sigmaZeroKa(i, j), i-1)
-        !--fs_300--!
 !begin  WSO 8/19/13 change dNw to Nw and add mu
         if(dPRData%rainType(i,j)>=100) then
             do k=1,88
@@ -1537,17 +1502,16 @@ do j=1,dPRData%n1c21
          else
             call copysfcrainliqfracs2_fs(missing_r4, i-1)
          end if
-         call copy_tot_to_liqrate_ku(i-1, rrate3D(:,i,j), dPRData%node(:,i,j))
-         call copy_tot_to_liqrate_kuka(i-1, rrate3DMS(:,i,j), dPRData%node(:,i,j),flagScanPattern)
-         call copy_tot_to_liqwatercont_ku(i-1, pwc3D(:,i,j), dPRData%node(:,i,j))
-         call copy_tot_to_liqwatercont_kuka(i-1, pwc3DMS(:,i,j), dPRData%node(:,i,j),flagScanPattern)
+         
+         call copy_tot_to_liqrate_kuka(i-1, rrate3DMS(:,i,j), &
+              dPRData%node(:,i,j),flagScanPattern)
+         call copy_tot_to_liqwatercont_kuka(i-1, pwc3DMS(:,i,j), &
+              dPRData%node(:,i,j),flagScanPattern)
          call copyd0s2_fs(d03DMS(:,i,j),i-1)
-         call copynodess2_fs(dPRData%node(:,i,j),i-1)
          call copyenvtemps2_fs(dPRData%envTemp(:,i,j), env_nodes(:,i), i-1)
          call copysfcairtemps2_fs(dPRData%envSfcTemp(i,j),i-1)
          call copyenvpresss2_fs(dPRData%envPress(:,i,j), env_nodes(:,i), i-1)
          call copysfcairpresss2_fs(dPRData%envSfcPress(i,j),i-1)
-         call copyenvqvs2_fs(dPRData%envQv(:,i,j), env_nodes(:,i), i-1)
          call copyenvsfqvs2_fs(dPRData%envQv(:,i,j),i-1)
          call copyskintemps2_fs(dPRData%envSknTemp(i,j),i-1)
          call copyskintempsigmas2_fs(skintempsigma_MS(i, j), i-1)
@@ -1555,28 +1519,6 @@ do j=1,dPRData%n1c21
          call copycolumncloudliqsigmas2_fs(columncloudliqsigma_MS(i, j), i-1)
          call copyalgotypes2_fs(algotype_MS(i, j), i-1)
          call copyerrorofdatafits2_fs(errorofdatafit_MS(i, j), i-1)
-         !--fs_300--!
-         !call copylognws2_fs_300(j-1, log10NwMean,dPRRet%n9(:,i,j),i-1)
-         !call copymus2_fs_300(j-1, mu_mean_prof,dPRRet%n9(:,i,j),i-1)
-         !call copyrrates2_fs_300(j-1,rrate3DMS(:,i,j),rrate3DstdMS(:,i,j),i-1)
-         !call copypwcs2_fs_300(j-1,pwc3DMS(:,i,j),pwc3DstdMS(:,i,j),i-1)
-         !call copylwcfracs2_fs_300(j-1,mlwc_fracMS(:,i,j),mrate_fracMS(:,i,j),i-1)
-         !call copysfcrainliqfracs2_fs_300(j-1,sfcRainLiqFracMS(i, j), i-1)
-         !call copyd0s2_fs_300(j-1,d03DMS(:,i,j),i-1)
-         !call copynodess2_fs_300(j-1,dPRData%node(:,i,j),i-1)
-         !call copyenvtemps2_fs_300(j-1,dPRData%envTemp(:,i,j), env_nodes(:,i), i-1)
-         !call copysfcairtemps2_fs_300(j-1,dPRData%envSfcTemp(i,j),i-1)
-         !call copyenvpresss2_fs_300(j-1,dPRData%envPress(:,i,j), env_nodes(:,i), i-1)
-         !call copysfcairpresss2_fs_300(j-1,dPRData%envSfcPress(i,j),i-1)
-         !call copyenvqvs2_fs_300(j-1,dPRData%envQv(:,i,j), env_nodes(:,i), i-1)
-         !call copyenvsfqvs2_fs_300(j-1,dPRData%envQv(:,i,j),i-1)
-         !call copyskintemps2_fs_300(j-1,dPRData%envSknTemp(i,j),i-1)
-         !call copyskintempsigmas2_fs_300(j-1,skintempsigma_MS(i, j), i-1)
-         !call copycolumnvaporsigmas2_fs_300(j-1,columnvaporsigma_MS(i, j), i-1)
-         !call copycolumncloudliqsigmas2_fs_300(j-1,columncloudliqsigma_MS(i, j), i-1)
-         !call copyalgotypes2_fs_300(j-1,algotype_MS(i, j), i-1)
-         !call copyerrorofdatafits2_fs_300(j-1,errorofdatafit_MS(i, j), i-1)
-         !--fs_300--!
 !end    WSO 8/30/13
          if(w10_out_MS(i,j)>0 .and. wfmap(i,j)>0.9) then
             !print*, i,j,w10_out_MS(i,j),'5'
@@ -1687,7 +1629,60 @@ do j=1,dPRData%n1c21
          !call copytbouts2_fs_300(j-1,tbout,i-1)
          !--fs_300--!
       endif
-!!end MG 09172013
+      if ((flagScanPattern.eq.0).and.(i.le.12.or.i.ge.38)) then
+         dPRData%OEQv(:,i,j)=missing_r4
+         dPRData%OETemp(:,i,j)=missing_r4
+         dPRData%OEcloudLiqSigma(i,j)=missing_r4
+         dPRData%OEcloudLiqPath(i,j)=missing_r4
+         dPRData%OEcloud(:,i,j)=missing_r4
+         dPRData%OESfcWind(i,j)=missing_r4
+         dPRData%OESfcWindSigma(i,j)=missing_r4
+         dPRData%OESknTemp(i,j)=missing_r4
+         dPRData%OEskinTempSigma(i,j)=missing_r4
+         dPRData%OESfcTemp(i,j)=missing_r4
+         dPRData%OESfcQv(i,j)=missing_r4
+         dPRData%OEtpw(i,j)=missing_r4
+         dPRData%OEtpwSigma(i,j)=missing_r4
+         dPRData%OEchiSq(i,j)=missing_r4
+         dPRData%OEsimTbNonRain(:,i,j)=missing_r4
+         dPRData%OEemisA(:,i,j)=missing_r4
+         dPRData%OEemis(:,i,j)=missing_r4
+         dPRData%OEemisSigma(:,i,j)=missing_r4
+         dPRData%OEstype(i,j)=missing_r4
+         dPRData%dsrtsigmaPIAka(i, j)=missing_r4
+         dPRData%OECloudLiqPath(i,j)=missing_r4
+         dPRData%OEpiaNonRain(:,i,j)=missing_r4
+      endif
+      if ((flagScanPattern.eq.0).and.(i.le.12.or.i.ge.38)) then
+         dPRRet%n9(:,i,j)=missing_i4
+         dPRData%node(:,i,j)=missing_i4
+         env_nodes(:,i)=missing_i4
+      endif
+      call copyenvqvs2_fs(dPRData%envQv(:,i,j), env_nodes(:,i), i-1)
+      call copynodess2_fs(dPRData%node(:,i,j),i-1)
+      call copy_oepianonrain_kukagmi(dPRData%OEpiaNonRain(:,i,j), i-1)
+      call copy_oeqv_kukagmi(dPRData%OEQv(:,i,j),env_nodes(:,i), i-1)
+      call copy_oetemp_kukagmi(dPRData%OETemp(:,i,j),env_nodes(:,i), i-1)
+      call copy_oecloud_kukagmi(dPRData%OECloud(:,i,j), i-1)
+      call copy_oecloudicepath_kukagmi(dPRData%OECloudLiqPath(i,j), i-1)
+      call copy_oecloudliqpath_kukagmi(dPRData%OECloudLiqPath(i,j), i-1)
+      call copy_oecloudliqsigma_kukagmi(dPRData%OEcloudLiqSigma(i,j), i-1)
+      call copy_oesfcwind_kukagmi(dPRData%OESfcWind(i,j), i-1)
+      call copy_oesfcwindsigma_kukagmi(dPRData%OESfcWindSigma(i,j), i-1)
+      call copy_oeskntemp_kukagmi(dPRData%OESknTemp(i,j), i-1)
+      call copy_oeskintempsigma_kukagmi(dPRData%OEskinTempSigma(i,j), i-1)
+      call copy_oesfctemp_kukagmi(dPRData%OESfcTemp(i,j), i-1)
+      call copy_oesfcqv_kukagmi(dPRData%OESfcQv(i,j), i-1)
+      call copy_oetpw_kukagmi(dPRData%OEtpw(i,j), i-1)
+      call copy_oetpwsigma_kukagmi(dPRData%OEtpwSigma(i,j), i-1)
+      call copy_oechisq_kukagmi(dPRData%OEchiSq(i,j), i-1)
+      call copy_oesimtbnonrain_kukagmi(dPRData%OEsimTbNonRain(:,i,j), i-1)
+      call copy_oeemis_kukagmi(dPRData%OEemis(:,i,j), i-1)
+      call copy_oeemissigma_kukagmi(dPRData%OEemisSigma(:,i,j), i-1)
+      call copy_oeemisa_kukagmi(dPRData%OEemisA(:,i,j), i-1)
+      call copy_oestype_kukagmi(dPRData%OEstype(i,j), i-1)
+      call copy_oe_missing_staff(i-1);
+      !!end MG 09172013
    enddo
    if(ialg==2) then
       call writescant()
