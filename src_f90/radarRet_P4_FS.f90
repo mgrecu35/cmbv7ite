@@ -1314,86 +1314,102 @@ do j=1,dPRData%n1c21
       else
         stype = LUT%land_class_map_snow(ii,jj) !SJM 9/9/15
       endif
+      if(dprRet%emis(i,j,1,1,1) .gt. 0.) then
+         !print*, dprRet%emis(i,j,1,1,1:nmemb1)
+         emissoutL(i,j,1) = sum(dprRet%emis(i,j,1,1,1:nmemb1))/nmemb1
+         emissoutL(i,j,2) = sum(dprRet%emis(i,j,2,1,1:nmemb1))/nmemb1
+         emissoutL(i,j,3) = sum(dprRet%emis(i,j,1,2,1:nmemb1))/nmemb1
+         emissoutL(i,j,4) = sum(dprRet%emis(i,j,2,2,1:nmemb1))/nmemb1
+         emissoutL(i,j,5) = sum(dprRet%emis(i,j,1,3,1:nmemb1))/nmemb1
+         emissoutL(i,j,6) = sum(dprRet%emis(i,j,1,4,1:nmemb1))/nmemb1
+         emissoutL(i,j,7) = sum(dprRet%emis(i,j,2,4,1:nmemb1))/nmemb1
+         emissoutL(i,j,8) = sum(dprRet%emis(i,j,1,5,1:nmemb1))/nmemb1
+         emissoutL(i,j,9) = sum(dprRet%emis(i,j,2,5,1:nmemb1))/nmemb1
+         emissoutL(i,j,10) = sum(dprRet%emis(i,j,1,6,1:nmemb1))/nmemb1
+         emissoutL(i,j,11) = sum(dprRet%emis(i,j,2,6,1:nmemb1))/nmemb1
+         emissoutL(i,j,12:13) = emissoutL(i,j,10)
+         
+         emis_rms_NS(i,j,1) = sqrt(sum((dprRet%emis(i,j,1,1,1:nmemb1)-emissoutL(i,j,1))**2)/nmemb1)
+         emis_rms_NS(i,j,2) = sqrt(sum((dprRet%emis(i,j,2,1,1:nmemb1)-emissoutL(i,j,2))**2)/nmemb1)
+         emis_rms_NS(i,j,3) = sqrt(sum((dprRet%emis(i,j,1,2,1:nmemb1)-emissoutL(i,j,3))**2)/nmemb1)
+         emis_rms_NS(i,j,4) = sqrt(sum((dprRet%emis(i,j,2,2,1:nmemb1)-emissoutL(i,j,4))**2)/nmemb1)
+         emis_rms_NS(i,j,5) = sqrt(sum((dprRet%emis(i,j,1,3,1:nmemb1)-emissoutL(i,j,5))**2)/nmemb1)
+         emis_rms_NS(i,j,6) = sqrt(sum((dprRet%emis(i,j,1,4,1:nmemb1)-emissoutL(i,j,6))**2)/nmemb1)
+         emis_rms_NS(i,j,7) = sqrt(sum((dprRet%emis(i,j,2,4,1:nmemb1)-emissoutL(i,j,7))**2)/nmemb1)
+         emis_rms_NS(i,j,8) = sqrt(sum((dprRet%emis(i,j,1,5,1:nmemb1)-emissoutL(i,j,8))**2)/nmemb1)
+         emis_rms_NS(i,j,9) = sqrt(sum((dprRet%emis(i,j,2,5,1:nmemb1)-emissoutL(i,j,9))**2)/nmemb1)
+         emis_rms_NS(i,j,10) = sqrt(sum((dprRet%emis(i,j,1,6,1:nmemb1)-emissoutL(i,j,10))**2)/nmemb1)
+         emis_rms_NS(i,j,11) = sqrt(sum((dprRet%emis(i,j,2,6,1:nmemb1)-emissoutL(i,j,11))**2)/nmemb1)
+         emis_rms_NS(i,j,12:13) = emis_rms_NS(i,j,10)
+         print*, 'emis_std',emis_rms_NS(i,j,:)
+         !print '(2i5, 13F8.3)', i, j, emis_rms_NS(i,j,1:13)
+      endif
+
       !print*, DPRData%xlon(i,j), DPRData%xlat(i,j), stype
       if(w10_out_NS(i,j)>0 .and. stype .eq. 1) then!wfmap(i,j)>0.9) then
-        call calc_relAz(sclonPR(i,j), sclatPR(i,j), DPRData%xlon(i,j), DPRData%xlat(i,j), dprData%envSfcWindU(i,j), dprData%envSfcWindV(i,j), relAz)
-        !print*, i,j,w10_out_NS(i,j),'4'
+         call calc_relAz(sclonPR(i,j), sclatPR(i,j), DPRData%xlon(i,j), DPRData%xlat(i,j), dprData%envSfcWindU(i,j), dprData%envSfcWindV(i,j), relAz)
+         !print*, i,j,w10_out_NS(i,j),'4'
          do jk=1,9
-!begin  WSO 10/14/15 flip polarization indices
-!            !ipolG(jk),ifreqG(jk)
-!            call intplte_emis(ifreqG(jk),1-(ipolG(jk)-1),dPRData%envSknTemp(i,j),w10_out_NS(i,j),emissout(i,j,jk),ebar)
+            !begin  WSO 10/14/15 flip polarization indices
+            !            !ipolG(jk),ifreqG(jk)
+            !            call intplte_emis(ifreqG(jk),1-(ipolG(jk)-1),dPRData%envSknTemp(i,j),w10_out_NS(i,j),emissout(i,j,jk),ebar)
             !ipolG(jk),ifreqG(jk)
             call intplte_emis(ifreqG(jk),ipolG(jk)-1,dPRData%envSknTemp(i,j),w10_out_NS(i,j),relAz,S1eiaPR(i,j),emissoutL(i,j,jk),ebar)
-!end    WSO 10/14/14
+            !end    WSO 10/14/14
          enddo
          call intplte_emis(ifreqG(10),0,dPRData%envSknTemp(i,j),w10_out_NS(i,j),relAz,S2eiaPR(i,j),emissoutL(i,j,10),ebar)
          call intplte_emis(ifreqG(11),1,dPRData%envSknTemp(i,j),w10_out_NS(i,j),relAz,S2eiaPR(i,j),emissoutL(i,j,11),ebar)
-!          if(dPRData%rainType(i,j)<1 .and.  abs(dPRData%xlat(i, j))>55) then
-!             call setEnv(dPRData%envQv(:,i,j),dPRData%envTemp(:,i,j),&
-!                  dPRData%envPress(:,i,j),dPRData%envSfcTemp(i,j),&
-!                  dPRData%envSknTemp(i,j))
-!             call getemissout2(tbRgrid(1:9,i,j+icL),emissout(i,j,1:9))
-!             emissout(i,j,10)=emissout(i,j,8)
-!             emissout(i,j,11)=emissout(i,j,9)
-!             emissout(i,j,12)=emissout(i,j,8)
-!             emissout(i,j,13)=emissout(i,j,8)
-!          endif
-!begin  WSO 10/14/15 replicate emissivities to HF
-           emissoutL(i,j,12:13)=emissoutL(i,j,10)
-!end    WSO 10/14/15
+         !          if(dPRData%rainType(i,j)<1 .and.  abs(dPRData%xlat(i, j))>55) then
+         !             call setEnv(dPRData%envQv(:,i,j),dPRData%envTemp(:,i,j),&
+         !                  dPRData%envPress(:,i,j),dPRData%envSfcTemp(i,j),&
+         !                  dPRData%envSknTemp(i,j))
+         !             call getemissout2(tbRgrid(1:9,i,j+icL),emissout(i,j,1:9))
+         !             emissout(i,j,10)=emissout(i,j,8)
+         !             emissout(i,j,11)=emissout(i,j,9)
+         !             emissout(i,j,12)=emissout(i,j,8)
+         !             emissout(i,j,13)=emissout(i,j,8)
+         !          endif
+         !begin  WSO 10/14/15 replicate emissivities to HF
+         emissoutL(i,j,12:13)=emissoutL(i,j,10)
+         !end    WSO 10/14/15
       else if(dprRet%emis(i,j,1,1,1) .gt. 0.) then
-        !print*, dprRet%emis(i,j,1,1,1:nmemb1)
-        emissoutL(i,j,1) = sum(dprRet%emis(i,j,1,1,1:nmemb1))/nmemb1
-        emissoutL(i,j,2) = sum(dprRet%emis(i,j,2,1,1:nmemb1))/nmemb1
-        emissoutL(i,j,3) = sum(dprRet%emis(i,j,1,2,1:nmemb1))/nmemb1
-        emissoutL(i,j,4) = sum(dprRet%emis(i,j,2,2,1:nmemb1))/nmemb1
-        emissoutL(i,j,5) = sum(dprRet%emis(i,j,1,3,1:nmemb1))/nmemb1
-        emissoutL(i,j,6) = sum(dprRet%emis(i,j,1,4,1:nmemb1))/nmemb1
-        emissoutL(i,j,7) = sum(dprRet%emis(i,j,2,4,1:nmemb1))/nmemb1
-        emissoutL(i,j,8) = sum(dprRet%emis(i,j,1,5,1:nmemb1))/nmemb1
-        emissoutL(i,j,9) = sum(dprRet%emis(i,j,2,5,1:nmemb1))/nmemb1
-        emissoutL(i,j,10) = sum(dprRet%emis(i,j,1,6,1:nmemb1))/nmemb1
-        emissoutL(i,j,11) = sum(dprRet%emis(i,j,2,6,1:nmemb1))/nmemb1
-        emissoutL(i,j,12:13) = emissoutL(i,j,10)
-        
-        emis_rms_NS(i,j,1) = sqrt(sum((dprRet%emis(i,j,1,1,1:nmemb1)-emissoutL(i,j,1))**2)/nmemb1)
-        emis_rms_NS(i,j,2) = sqrt(sum((dprRet%emis(i,j,2,1,1:nmemb1)-emissoutL(i,j,2))**2)/nmemb1)
-        emis_rms_NS(i,j,3) = sqrt(sum((dprRet%emis(i,j,1,2,1:nmemb1)-emissoutL(i,j,3))**2)/nmemb1)
-        emis_rms_NS(i,j,4) = sqrt(sum((dprRet%emis(i,j,2,2,1:nmemb1)-emissoutL(i,j,4))**2)/nmemb1)
-        emis_rms_NS(i,j,5) = sqrt(sum((dprRet%emis(i,j,1,3,1:nmemb1)-emissoutL(i,j,5))**2)/nmemb1)
-        emis_rms_NS(i,j,6) = sqrt(sum((dprRet%emis(i,j,1,4,1:nmemb1)-emissoutL(i,j,6))**2)/nmemb1)
-        emis_rms_NS(i,j,7) = sqrt(sum((dprRet%emis(i,j,2,4,1:nmemb1)-emissoutL(i,j,7))**2)/nmemb1)
-        emis_rms_NS(i,j,8) = sqrt(sum((dprRet%emis(i,j,1,5,1:nmemb1)-emissoutL(i,j,8))**2)/nmemb1)
-        emis_rms_NS(i,j,9) = sqrt(sum((dprRet%emis(i,j,2,5,1:nmemb1)-emissoutL(i,j,9))**2)/nmemb1)
-        emis_rms_NS(i,j,10) = sqrt(sum((dprRet%emis(i,j,1,6,1:nmemb1)-emissoutL(i,j,10))**2)/nmemb1)
-        emis_rms_NS(i,j,11) = sqrt(sum((dprRet%emis(i,j,2,6,1:nmemb1)-emissoutL(i,j,11))**2)/nmemb1)
-        emis_rms_NS(i,j,12:13) = emis_rms_NS(i,j,10)
-        !print '(2i5, 13F8.3)', i, j, emis_rms_NS(i,j,1:13)
-      endif
+         !print*, dprRet%emis(i,j,1,1,1:nmemb1)
+         emissoutL(i,j,1) = sum(dprRet%emis(i,j,1,1,1:nmemb1))/nmemb1
+         emissoutL(i,j,2) = sum(dprRet%emis(i,j,2,1,1:nmemb1))/nmemb1
+         emissoutL(i,j,3) = sum(dprRet%emis(i,j,1,2,1:nmemb1))/nmemb1
+         emissoutL(i,j,4) = sum(dprRet%emis(i,j,2,2,1:nmemb1))/nmemb1
+         emissoutL(i,j,5) = sum(dprRet%emis(i,j,1,3,1:nmemb1))/nmemb1
+         emissoutL(i,j,6) = sum(dprRet%emis(i,j,1,4,1:nmemb1))/nmemb1
+         emissoutL(i,j,7) = sum(dprRet%emis(i,j,2,4,1:nmemb1))/nmemb1
+         emissoutL(i,j,8) = sum(dprRet%emis(i,j,1,5,1:nmemb1))/nmemb1
+         emissoutL(i,j,9) = sum(dprRet%emis(i,j,2,5,1:nmemb1))/nmemb1
+         emissoutL(i,j,10) = sum(dprRet%emis(i,j,1,6,1:nmemb1))/nmemb1
+         emissoutL(i,j,11) = sum(dprRet%emis(i,j,2,6,1:nmemb1))/nmemb1
+         emissoutL(i,j,12:13) = emissoutL(i,j,10)
+      end if
+
+      !endif
       !if(maxval(emissout(i,j,1:13)) .gt. 2.) then 
       !  print'(A6,2I5,13F8.3)', 'NS Out', i,j,emissout(i,j,1:13)
       !  print*, dprRet%emis(i,j,1,1,1:nmemb1)
       !endif
       !print '(2I5,13F8.3)',i,j,emissout(i,j,1:13)
-!begin  WSO 6/5/18 limit emissivities
+      !begin  WSO 6/5/18 limit emissivities
       do k = 1, 13
-        if(emissoutL(i,j,k) .gt. missing_r4) then
-          emissoutL(i,j,k) = min(max(emissoutL(i,j,k), surfEmissivity_min), surfEmissivity_max)
-        endif
+         if(emissoutL(i,j,k) .gt. missing_r4) then
+            emissoutL(i,j,k) = min(max(emissoutL(i,j,k), surfEmissivity_min), surfEmissivity_max)
+         endif
       enddo
-!end    WSO 6/5/18 
+      !end    WSO 6/5/18 
       if(ialg==2) then
          call copysfcemissouts1t(emissoutL(i,j,:),i-1)
          call copysfcemissouts1sigmat(emis_rms_NS(i,j,:),i-1)
       else
          call copysfcemissouts1_fs(emissoutL(i,j,:),i-1)
-         call copysfcemissouts1sigma(emis_rms_NS(i,j,:),i-1)
-         !--fs_300--!
-         !call copysfcemissouts1_fs_300(j-1,emissoutL(i,j,:),i-1)
-         !call copysfcemissouts1sigma_300(j-1,emis_rms_NS(i,j,:),i-1)
-         !--fs_300--!
+         !print*, 'emis_std3',emis_rms_NS(i,j,:)
+         call copysfcemissouts1sigma_fs(emis_rms_NS(i,j,:),i-1)
       endif
-      print*, flagScanPattern, i, j, rrate3DMS(:,i,j) 
+      !print*, flagScanPattern, i, j, rrate3DMS(:,i,j) 
       if((flagScanPattern.eq.0).and.(i.le.12.or.i.ge.38)) then
          dPRData%rainFlagBad(i,j)=missing_r4
          dPRData%ioqualityflagdpr(i,j)=missing_r4
@@ -1520,6 +1536,35 @@ do j=1,dPRData%n1c21
          call copyalgotypes2_fs(algotype_MS(i, j), i-1)
          call copyerrorofdatafits2_fs(errorofdatafit_MS(i, j), i-1)
 !end    WSO 8/30/13
+         if(dprRet%MS%emis(i,j,1,1,1) .gt. 0.) then
+           emissoutL(i,j,1) = sum(dprRet%MS%emis(i,j,1,1,1:nmemb1))/nmemb1
+           emissoutL(i,j,2) = sum(dprRet%MS%emis(i,j,2,1,1:nmemb1))/nmemb1
+           emissoutL(i,j,3) = sum(dprRet%MS%emis(i,j,1,2,1:nmemb1))/nmemb1
+           emissoutL(i,j,4) = sum(dprRet%MS%emis(i,j,2,2,1:nmemb1))/nmemb1
+           emissoutL(i,j,5) = sum(dprRet%MS%emis(i,j,1,3,1:nmemb1))/nmemb1
+           emissoutL(i,j,6) = sum(dprRet%MS%emis(i,j,1,4,1:nmemb1))/nmemb1
+           emissoutL(i,j,7) = sum(dprRet%MS%emis(i,j,2,4,1:nmemb1))/nmemb1
+           emissoutL(i,j,8) = sum(dprRet%MS%emis(i,j,1,5,1:nmemb1))/nmemb1
+           emissoutL(i,j,9) = sum(dprRet%MS%emis(i,j,2,5,1:nmemb1))/nmemb1
+           emissoutL(i,j,10) = sum(dprRet%MS%emis(i,j,1,6,1:nmemb1))/nmemb1
+           emissoutL(i,j,11) = sum(dprRet%MS%emis(i,j,2,6,1:nmemb1))/nmemb1
+           emissoutL(i,j,12:13) = emissoutL(i,j,10)
+           
+           emis_rms_MS(i,j,1) = sqrt(sum((dprRet%MS%emis(i,j,1,1,1:nmemb1)-emissoutL(i,j,1))**2)/nmemb1)
+           emis_rms_MS(i,j,2) = sqrt(sum((dprRet%MS%emis(i,j,2,1,1:nmemb1)-emissoutL(i,j,2))**2)/nmemb1)
+           emis_rms_MS(i,j,3) = sqrt(sum((dprRet%MS%emis(i,j,1,2,1:nmemb1)-emissoutL(i,j,3))**2)/nmemb1)
+           emis_rms_MS(i,j,4) = sqrt(sum((dprRet%MS%emis(i,j,2,2,1:nmemb1)-emissoutL(i,j,4))**2)/nmemb1)
+           emis_rms_MS(i,j,5) = sqrt(sum((dprRet%MS%emis(i,j,1,3,1:nmemb1)-emissoutL(i,j,5))**2)/nmemb1)
+           emis_rms_MS(i,j,6) = sqrt(sum((dprRet%MS%emis(i,j,1,4,1:nmemb1)-emissoutL(i,j,6))**2)/nmemb1)
+           emis_rms_MS(i,j,7) = sqrt(sum((dprRet%MS%emis(i,j,2,4,1:nmemb1)-emissoutL(i,j,7))**2)/nmemb1)
+           emis_rms_MS(i,j,8) = sqrt(sum((dprRet%MS%emis(i,j,1,5,1:nmemb1)-emissoutL(i,j,8))**2)/nmemb1)
+           emis_rms_MS(i,j,9) = sqrt(sum((dprRet%MS%emis(i,j,2,5,1:nmemb1)-emissoutL(i,j,9))**2)/nmemb1)
+           emis_rms_MS(i,j,10) = sqrt(sum((dprRet%MS%emis(i,j,1,6,1:nmemb1)-emissoutL(i,j,10))**2)/nmemb1)
+           emis_rms_MS(i,j,11) = sqrt(sum((dprRet%MS%emis(i,j,2,6,1:nmemb1)-emissoutL(i,j,11))**2)/nmemb1)
+           emis_rms_MS(i,j,12:13) = emis_rms_MS(i,j,10)
+           !print '(2i5, 13F8.3)', i, j, emis_rms_MS(i,j,1:13)
+         endif
+
          if(w10_out_MS(i,j)>0 .and. wfmap(i,j)>0.9) then
             !print*, i,j,w10_out_MS(i,j),'5'
             call calc_relAz(sclonPR(i,j),sclatPR(i,j), DPRData%xlon(i,j), DPRData%xlat(i,j), dprData%envSfcWindU(i,j), dprData%envSfcWindV(i,j), relAz)

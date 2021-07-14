@@ -1037,6 +1037,7 @@ subroutine radarRetSub2(nmu2,  nmfreq2,   icL, tbRgrid,               &
                        dPRRet%log10dNw (k+1+(ibatch-1)*nmemb1,:,i,j)=-99
                        dPRRet%d0 (k+1+(ibatch-1)*nmemb1,:,i,j)=-99
                     enddo
+                    !print*, dPRRet%emis(i,j,1,5,:)
                     !                 print*, dPRRet%tb(i,j,1,:,1)
                     !  ifreqG(1:9)=(/1,1,2,2,3,4,4,5,5/)
                     !  ipolG(1:9)=(/1,2,1,2,1,1,2,1,2/)

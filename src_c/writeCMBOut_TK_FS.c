@@ -1122,11 +1122,14 @@ void copysfcemissouts1sigma_fs_(float *tbout, int *i)
 //begin  WSO 10/13/15 change loops to output HF
 //                    emissivities
   for(k=0;k<13;k++)
-//begin  WSO 9/16/13
-    if(tbout[k] > 0.)
-      swathx.KuGMI.surfEmissSigma[*i][k]=tbout[k];
-    else
-      swathx.KuGMI.surfEmissSigma[*i][k]=missing_r4c;
+    {
+      printf("%g ",tbout[k]);
+      if(tbout[k] > 0.)
+	swathx.KuGMI.surfEmissSigma[*i][k]=tbout[k];
+      else
+	swathx.KuGMI.surfEmissSigma[*i][k]=missing_r4c;
+    }
+  printf(" from c\n");
 //begin  WSO 7/28/16 remove extra channels
 //  for(k=13;k<15;k++)
 //    swathx.KuGMI.surfEmissivity[*i][k]=missing_r4c;
