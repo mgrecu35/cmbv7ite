@@ -58,7 +58,7 @@ TKINFO ctkfileIn;
 
 L2BCMB_SWATHS swath;
 L2ADPR_SWATHS dprswath;
-L2ADPR_SWATHS_7f0 dprxswath;
+L2ADPR_SWATHS dprxswath;
 L2BCMB_SWATHS swath1;
 L2AKu_FS     L2AKuDataX;
 
@@ -641,7 +641,7 @@ void frominput_fs_(long *st_2adpr, int *flagScanPattern)
   extern L2BCMB_SWATHS swathx;
 //begin  WSO 9/1/13
   extern L2ADPR_SWATHS dprswath;
-  extern L2ADPR_SWATHS_7f0 dprxswath;
+  extern L2ADPR_SWATHS dprxswath;
 //end    WSO 9/1/13
   int j;
   int status, status_dpr ;
@@ -657,7 +657,10 @@ void frominput_fs_(long *st_2adpr, int *flagScanPattern)
   //  return;
 
 //  SFM  begin  12/13/2013
-  *flagScanPattern= dprxswath.FS.FLG.flagScanPattern[1];
+  
+  int c_flagScanPattern=(int) dprxswath.FS.FLG.flagScanPattern[0];
+  //printf("read flagScanPattern %i \n",c_flagScanPattern);
+  *flagScanPattern= c_flagScanPattern;
   for( j=0; j<49; j++)
     {
       //swathx.KuGMI.Input.piaEffective[j]=L2AKuData.SRT.pathAtten[j];
@@ -1123,13 +1126,13 @@ void copysfcemissouts1sigma_fs_(float *tbout, int *i)
 //                    emissivities
   for(k=0;k<13;k++)
     {
-      printf("%g ",tbout[k]);
+//      printf("%g ",tbout[k]);
       if(tbout[k] > 0.)
 	swathx.KuGMI.surfEmissSigma[*i][k]=tbout[k];
       else
 	swathx.KuGMI.surfEmissSigma[*i][k]=missing_r4c;
     }
-  printf(" from c\n");
+//  printf(" from c\n");
 //begin  WSO 7/28/16 remove extra channels
 //  for(k=13;k<15;k++)
 //    swathx.KuGMI.surfEmissivity[*i][k]=missing_r4c;
