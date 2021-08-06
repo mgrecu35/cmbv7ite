@@ -56,61 +56,64 @@ int main(int argc, char *argv[])
   int nchunk=ndpr/300;
   printf("nchunk = %d\n",nchunk);
   //nchunk=1;
-  nchunk=2;
-  for(i=0;i<=nchunk;i++)
+  // nchunk=12;
+  if(ndpr>0)
     {
-      if(ifs==1)
-       {
-        printf("Calling do_chunkx()\n");
-	do_chunkx_(&i,&one,&idir);
-       }
-      else
-	do_chunk_(&i,&one,&idir);
-      icL=i*300;
-      if(i==2)
-      {
-	printf("GMIretsub\n");
-	gmiretsub_(&icL, &i, &orbNumb, &ialg, &idir);
-	
-	printf("Calling radarretsub2\n");
-	radarretsub2_(&nmu,  &nmfreq,   &icL, tbRgrid,  
-		      dprrain, &i, &orbNumb, &ialg, &idir);
-	printf("Calling radarretsub3\n");
-	radarretsub3_(&nmu,  &nmfreq,   &icL, tbRgrid,  
-		      dprrain, &i, &orbNumb, &ialg, &idir);
-	if(ifs==1) 
+      for(i=0;i<=nchunk;i++)
+	{
+	  if(ifs==1)
+	    {
+	      printf("Calling do_chunkx()\n");
+	      do_chunkx_(&i,&one,&idir);
+	    }
+	  else
+	    do_chunk_(&i,&one,&idir);
+	  icL=i*300;
+	  //if(i==10)
 	  {
-	    int nscans_c;
-	    printf("Calling radarretsub4_fs() \n");
-	    radarretsub4_fs_(&nmu,  &nmfreq,   &icL, tbRgrid,  
-			     dprrain, &i, &orbNumb, &ialg, &idir, &nscans_c);
-	    int j=0;
-	    /*for(j=0;j<nscans_c;j++)
-	      writescan_fs_300_(&j);*/
-	  }
-	else
-	  {
-	    int nscans_c;
-	    printf("Calling radarretsub4()\n");
-	    radarretsub4_(&nmu,  &nmfreq,   &icL, tbRgrid,  
-			  dprrain, &i, &orbNumb, &ialg, &idir, &nscans_c);
-	    int j=0;
-	    /*if(ialg==1)
-	      for(j=0;j<-nscans_c;j++)
-	      writescan_300_(&j);
-	      else
-	      for(j=0;j<-nscans_c;j++)
-	      writescant_300_(&j);
-	    */
+	    printf("GMIretsub\n");
+	    gmiretsub_(&icL, &i, &orbNumb, &ialg, &idir);
 	    
+	    printf("Calling radarretsub2\n");
+	    radarretsub2_(&nmu,  &nmfreq,   &icL, tbRgrid,  
+			  dprrain, &i, &orbNumb, &ialg, &idir);
+	    printf("Calling radarretsub3\n");
+	    radarretsub3_(&nmu,  &nmfreq,   &icL, tbRgrid,  
+			  dprrain, &i, &orbNumb, &ialg, &idir);
+	    if(ifs==1) 
+	      {
+		int nscans_c;
+		printf("Calling radarretsub4_fs() \n");
+		radarretsub4_fs_(&nmu,  &nmfreq,   &icL, tbRgrid,  
+				 dprrain, &i, &orbNumb, &ialg, &idir, &nscans_c);
+		int j=0;
+		/*for(j=0;j<nscans_c;j++)
+		  writescan_fs_300_(&j);*/
+	      }
+	    else
+	      {
+		int nscans_c;
+		printf("Calling radarretsub4()\n");
+		radarretsub4_(&nmu,  &nmfreq,   &icL, tbRgrid,  
+			      dprrain, &i, &orbNumb, &ialg, &idir, &nscans_c);
+		int j=0;
+		/*if(ialg==1)
+		  for(j=0;j<-nscans_c;j++)
+		  writescan_300_(&j);
+		  else
+		  for(j=0;j<-nscans_c;j++)
+		  writescant_300_(&j);
+		*/
+		
+	      }
+	    dealloc_struct_(&i);
 	  }
-	dealloc_struct_(&i);
-      }
-      
-      //rewindc_(&icL);
-      dealloc_chunk_(&i);
+	  
+	  //rewindc_(&icL);
+	  dealloc_chunk_(&i);
+	}
+      printf("Closing Files \n");
+      closefiles_(&one);
     }
-printf("Closing Files \n");
-closefiles_(&one);
 }
 
