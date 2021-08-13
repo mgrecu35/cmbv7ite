@@ -297,9 +297,9 @@ subroutine get_state_clw1d_rh(nvar,neof,nlev,x,xbar,xstd,prof_W,prof_avg,prof_st
   real, intent(in) :: x(nvar), xbar(nvar), xstd(nvar)
   real, intent(in) :: prof_avg(1+2*MERRA_NLEV), prof_W(1+2*MERRA_NLEV), prof_std(1+2*MERRA_NLEV)
   real, intent(in) :: prof_eofs(1+2*MERRA_NLEV,1+2*MERRA_NLEV)
-  type(profile), intent(inout) :: gdata
+  type(profile) :: gdata
 
-  integer :: i, j, i0
+  integer :: i, j, i0, istatus
   real :: Tavg, Qavg, dz, R, clwp, tpw, es, pv, rhov, rhod, rh_lev(MERRA_NLEV)
 
   i0=0
@@ -414,7 +414,12 @@ subroutine get_state_clw1d_rh(nvar,neof,nlev,x,xbar,xstd,prof_W,prof_avg,prof_st
       !print*, i, gdata%temp_lev(i), gdata%hgt_lev(i), gdata%press_lev(i), gdata%anc_clw_lev(i), gdata%cloud_water(i)
     end do
   else
-     call check_nan(gdata%hgt_lev,gdata%temp_lev)
+     call check_nan(gdata%hgt_lev,gdata%temp_lev,istatus)
+     if(istatus.eq.1) then
+        print*, xbar
+        print*, xstd
+        print*, x
+     endif
      call get_clw_profile(gdata,nlev,clwp) 
   endif
   
