@@ -277,6 +277,7 @@ SUBROUTINE gmi_ocean_ret_noclw(gdata, ret, relAz_in) !retrieval variables
   !Define variance in obs. No covariance in the observations
   !Eventually, will need to run a lot of orbits to estimate the true error covaraince matrix for pixels with 0 rain fraction and 0 land fraction.
   sy(:,:) = 0.
+  !print*, nobs, gmi_ch
   do a=1,nobs
     do b=1,nobs
       !sy(a,b) = GMI_clr_errcov(gmi_ch(a),gmi_ch(b))
@@ -947,12 +948,16 @@ SUBROUTINE gmi_ocean_ret_clw1d(gdata, ret, relAz_in) !retrieval variables
         xprime = x
         gdata_p=gdata
         do j=1,neof
-          if(j .le. neof) xprime(j) = xprime(j)+sqrt(sx(j,j))*r4_normal_01(seed)
-          !if(j .gt. neof) xall(j) = r4_normal_01(seed)
-          !print*, j, xall(j)
+           if(sx(j,j)<1e-5) then
+              print*, 'sx=',sx(j,j)
+              sx(j,j)=1e-5
+           endif
+           if(j .le. neof) xprime(j) = xprime(j)+sqrt(sx(j,j))*r4_normal_01(seed)
+           !if(j .gt. neof) xall(j) = r4_normal_01(seed)
+           !print*, j, xall(j)
         end do
         !stop
-        call check_nan(gdata_p%hgt_lev,gdata_p%temp_lev)
+        !call check_nan(gdata_p%hgt_lev,gdata_p%temp_lev)
         call get_state_clw1d_rh(nvar,neof,nlev,xprime,xbar,xstd,prof_W,prof_avg,prof_std,prof_eofs,gdata_p)
         call calc_tpw(gdata_p,nlev,tpw(i))
         tskin(i) = gdata_p%tskin
