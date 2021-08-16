@@ -56,7 +56,9 @@ subroutine oe_step(nobs,nvar,x,xa,sa_i,y,F,sy_i,K,xnext,sx,sx_i,prod2,xmin,xmax)
       if (xnext(a) .lt. xmin(a)) xnext(a) = xmin(a)
     end do
   endif
-
+  do a=1,nvar
+     sx(a,a)=max(sx(a,a),1e-9)
+  enddo
 end subroutine oe_step
 
 subroutine oe_step_mirs(nobs,nvar,x,K,Sa,Sy,y,F,dx,xnext,xmin,xmax)
