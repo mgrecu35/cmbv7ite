@@ -562,14 +562,14 @@ extern "C" void ensradretstcvku_( radarDataType   *radarData,
   if(*wfractPix>90)
     {
       if (stormStruct->nodes[0]<stormStruct->nodes[2]+2 && 
-	  stormStruct->rainType==1)
+	  (stormStruct->rainType==1 || stormStruct->rainType==3))
 	for(j=0;j<9;j++)
 	  for(i=0;i<radarRet->nMemb;i++)
 	    logdNw[i][j]+=0.1; //ocean v6 0.1
     }
   else
     if(*wfractPix<10 && stormStruct->nodes[0]<stormStruct->nodes[2]-4 && 
-       stormStruct->rainType==1 )
+       (stormStruct->rainType==1 || stormStruct->rainType==3) )
       for(j=0;j<9;j++)
 	for(i=0;i<radarRet->nMemb;i++)
 	  logdNw[i][j]-=0.075; // land v6 -0.1
@@ -603,14 +603,22 @@ extern "C" void ensradretstcvku_( radarDataType   *radarData,
   dm/=radarRet->nMemb;
   rsfcMean/=radarRet->nMemb;
   float xnudg=1.0;
-  if(stormStruct->rainType==1 && dm>0.5)
+
+  //printf("rainType=%i Dm=%6.2f rsfcMean=%6.2f sfcNode=%i \n",
+  //stormStruct->rainType,
+  //dm,rsfcMean,stormStruct->nodes[4]);
+
+  if((stormStruct->rainType==1 || stormStruct->rainType==3) && dm>0.5)
     {
+      //printf("Dm=%g rsfcMean=%g\n",dm,rsfcMean);
       if(rsfcMean>5)
 	{
 	  nstdA=0.125+(rsfcMean-5)/5.*0.125;
 	  if(nstdA>0.25)
 	    nstdA=0.25;
 	}
+      else
+	nstdA=0.125;
       for(i=0;i<radarRet->nMemb;i++)
 	for(j=0;j<9;j++)
 	  {
