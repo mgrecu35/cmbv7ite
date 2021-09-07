@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
   int nchunk=ndpr/300;
   printf("nchunk = %d\n",nchunk);
   //nchunk=1;
-  // nchunk=12;
+  // nchunk=2;
   if(ndpr>0)
     {
       for(i=0;i<=nchunk;i++)
