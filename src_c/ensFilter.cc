@@ -617,8 +617,8 @@ extern "C" void ensradretstcvku_( radarDataType   *radarData,
 	  if(nstdA>0.25)
 	    nstdA=0.25;
 	}
-      else
-	nstdA=0.125;
+      //else
+      //nstdA=0.125;
       for(i=0;i<radarRet->nMemb;i++)
 	for(j=0;j<9;j++)
 	  {

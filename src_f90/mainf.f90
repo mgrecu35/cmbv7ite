@@ -180,7 +180,7 @@ subroutine mainfort(jobname, f1ctmi1,f1ctmi2,f1ctmi3,                    &
   call readdmnw()
 
 !  SFM  start  11/18/2013
-  nMemb=10
+  nMemb=50
 !  SFM  end    11/18/2013
   ifdpr(1:1)='N'
   

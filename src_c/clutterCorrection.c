@@ -70,7 +70,7 @@ void estimated_sfc_precip1_(int *i, float *pRate1d, float *pRateStd1d, float *sf
 	  //for(k=0;k<itop;k++)
 	  //  printf("%g ",pRateCCTables[k][fzClass]);
 	  //printf("\n");
-	  if(pRateCS[0]>0.0001)
+	  if(pRateCS[0]>0.1)
 	    {
 	      est_Surf_Precip=pRateCS[n1]/pRateCS[0]*pRate1d[(int)(*cfb/2)-1];
 	      swathx.KuGMI.estimSurfPrecipTotRate[*i]=est_Surf_Precip;
@@ -171,7 +171,7 @@ void estimated_sfc_precip2_(int *i, float *pRate1d, float *pRateStd1d, float *sf
   float liqFractR;
   //printf("scanPattern=%i %i \n",*flagScanPattern,*i);
   swathx.KuKaGMI.FLG.scanPatternFlag=*flagScanPattern;
-  swathx.KuGMI.FLG.scanPatternFlag=*flagScanPattern;
+  swathx.KuGMI.FLG.scanPatternFlag=0;//*flagScanPattern;
   if(*flagScanPattern==0 &&(*i<11 || *i>37))
     {
       swathx.KuKaGMI.estimSurfPrecipTotRate[*i]=missing_r4c;
@@ -208,8 +208,7 @@ void estimated_sfc_precip2_(int *i, float *pRate1d, float *pRateStd1d, float *sf
 	  else
 	    if(dRange>=0 && dRange<4)
 	      liqFractR=dRange/4.0;
-
-	  if(pRateCS[0]>0.0001)
+	  if(pRateCS[0]>0.1)
 	    {
 	      est_Surf_Precip=pRateCS[n1]/pRateCS[0]*pRate1d[(int)(*cfb/2)-1];
 	      swathx.KuKaGMI.estimSurfPrecipTotRate[*i]=est_Surf_Precip;

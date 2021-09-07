@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
 	  else
 	    do_chunk_(&i,&one,&idir);
 	  icL=i*300;
-	  //if(i==10)
+	  //if(i>=22 && i<=23)
 	  {
 	    printf("GMIretsub\n");
 	    gmiretsub_(&icL, &i, &orbNumb, &ialg, &idir);

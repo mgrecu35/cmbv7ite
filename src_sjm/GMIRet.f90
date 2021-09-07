@@ -103,7 +103,7 @@ subroutine gmiretsub(icL,ichunk,orbNumb,ialg,idir)
     !set up GMI data structures
     !print*, i
     !$OMP PARALLEL DEFAULT(SHARED)
-    !$OMP DO PRIVATE (j,gmi_dist,S2i,idpr,jdpr,kg,kp,dp,rho,wf,gmi_ret_ocean,gmi_ret_land,gmi_ret_ice,gmidata_temp,i2,j2)
+    !$OMP DO PRIVATE (j,gmi_dist,gmiprof,S2i,idpr,jdpr,kg,kp,dp,rho,wf,gmi_ret_ocean,gmi_ret_land,gmi_ret_ice,gmidata_temp,i2,j2)
     do j=minGMIpix(1),maxGMIpix(1)
       !print*,i,j
       gmiprof(j)%sclat = gmidata%sclat(i)

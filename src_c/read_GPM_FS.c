@@ -58,7 +58,7 @@ TKINFO granuleHandle2AKu;
 TKINFO tkfileinfo;
 
 TKINFO dprtkfile;
-extern L2ADPR_SWATHS_7f0 dprxswath;
+extern L2ADPR_SWATHS dprxswath;
 
 //  begin  SFM  09/12/2013
 extern TKINFO ctkfile;
@@ -172,7 +172,7 @@ void read2akux_(char *jobname, char *f2aku, int *n1c21,
 
     printf("Trying to open 2AKuX filename: %s\n",&fname[0]);
 
-    status = TKopen(&fname[0], "2AKu_7f0", TKREAD, "HDF5", jobname,
+    status = TKopen(&fname[0], "2AKu", TKREAD, "HDF5", jobname,
 		    &granuleHandle2AKu, 1);
 //  status = TKopen(&fname[0], "2AKu_aa1", TKREAD, "HDF5", jobname,
 //		  &granuleHandle2AKu, 1);
@@ -225,7 +225,7 @@ void read2akux_(char *jobname, char *f2aku, int *n1c21,
 	if(strncmp(dprfname,"nil",3)!=0 && *status_alpha == 0)
 	  {
 //aa  begin  SFM  09/04/2013
-	    *status_alpha = TKopen(dprfname,"2ADPR_7f0",TKREAD,"HDF5",jobname,&dprtkfile,1);
+	    *status_alpha = TKopen(dprfname,"2ADPR",TKREAD,"HDF5",jobname,&dprtkfile,1);
 //	    status = TKopen(dprfname,"2ADPR_aa1",TKREAD,"HDF5",jobname,&dprtkfile,1);
 //aa  end  SFM  09/04/2013
 //  begin  SFM  09/12/2013
@@ -778,7 +778,7 @@ int readdprpflagx_(char *jobname, char *f2aku, int *n1c21,
 //		  &granuleHandle2AKu, 1);
   printf("%s\n",&fname[0]);
  
-  status_alpha = TKopen(&fname[0], "2AKu_7f0", TKREAD, "HDF5", jobname,
+  status_alpha = TKopen(&fname[0], "2AKu", TKREAD, "HDF5", jobname,
 		  &granuleHandle2AKu, 1);
   if (status_alpha != 0)
       {

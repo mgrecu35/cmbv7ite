@@ -84,7 +84,7 @@ int readgmi_(char *jobname, char *f1cgmi,  int *n1b11, float *tmilow,
   int             status, orbNumber,i, ind, ipia, indh,j, k, nscans, nscanmax;
 
 //  TKINFO          tkfileinfo;
-  L1CGMI_SWATHS_as3   data;
+  L1CGMI_SWATHS   data;
   char emptygranuletext[100];
  
   i=0;
@@ -96,7 +96,7 @@ int readgmi_(char *jobname, char *f1cgmi,  int *n1b11, float *tmilow,
 //  SFM  begin 12/06/2013; to pass out TK status message
 //begin  LAW  9/4/13 1CGMI to 1CGMI_r1
 //aa   status = TKopen(granuleID,"1CGMI", TKREAD, "HDF5", jobname, &tkfileinfo, 1);
-    status_alpha = TKopen(granuleID,"1CGMI_as3", TKREAD, "HDF5", jobname, &tkfileinfo, 1);
+    status_alpha = TKopen(granuleID,"1CGMI", TKREAD, "HDF5", jobname, &tkfileinfo, 1);
     if (status_alpha != 0)
       {
        printf("WARNING: Unable to access 1CGMI %i \n",status_alpha);

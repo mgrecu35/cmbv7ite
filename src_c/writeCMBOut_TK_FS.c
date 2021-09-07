@@ -658,7 +658,7 @@ void frominput_fs_(long *st_2adpr, int *flagScanPattern)
 
 //  SFM  begin  12/13/2013
   
-  int c_flagScanPattern=(int) dprxswath.FS.FLG.flagScanPattern[0];
+  int c_flagScanPattern=(int) dprxswath.FS.FLG.flagScanPattern[1];
   //printf("read flagScanPattern %i \n",c_flagScanPattern);
   *flagScanPattern= c_flagScanPattern;
   for( j=0; j<49; j++)

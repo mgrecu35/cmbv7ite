@@ -164,7 +164,7 @@ subroutine radarRetSub4_FS(nmu2,  nmfreq2,   icL, tbRgrid,               &
   real    :: pRateOut(nscans,npixs,nlev), swcOut(nscans,npixs,nlev), nwOut(nscans,npixs,nlev)
   integer :: sfcBin(nscans,npixs)
   real    :: tbsim(nscans,npixs,nchans)
-  integer :: flagScanPattern
+  integer :: flagScanPattern, flagScanPattern_0
   real    :: dm3d_a(nbin,49,300), dm3dMS_a(nbin,49,300), log10NwMean_a(nbin), &
        nw3d_a(nbin,49,300), nw3dms_a(nbin,49,300)
 
@@ -954,7 +954,7 @@ if(iconv==1) then
         dPRData%xlat(:,1:dPRData%n1c21), dPRData%xlon(1:49,1:dPRData%n1c21),&
         scLonPR(1:49,1:dPRData%n1c21),scLatPR(1:49,1:dPRData%n1c21),&
         wfmap(1:49,1:dPRData%n1c21),&
-        fpmap(1:49,1:dPRData%n1c21,1:9), &
+       fpmap(1:49,1:dPRData%n1c21,1:9), &
         nf,fobj,ifreqG,sfcRain(1:49,1:dPRData%n1c21),ialg)
    
    call convallfreq(actOb,tbNoOceanMS(:,:,1:9),tbNoOceanMS(:,:,1:9),&
@@ -981,6 +981,8 @@ do j=1,dPRData%n1c21
    else
       !print*, j, j+icL, ichunk
       call frominput_fs(st_2adpr,flagScanPattern)
+      !print*, 'FSP=',j, flagScanPattern
+      flagScanPattern_0=flagScanPattern
       call copyscantime_fs(j-1)
       !--fs_300--!
       !call frominput_fs_300(j-1,st_2adpr)
@@ -1032,7 +1034,10 @@ do j=1,dPRData%n1c21
       !call setlatlons2_fs_300(j-1, dPRData%xlat(:,j), dPRData%xlon(:,j),             &
       !     sfcRainMS(:,j),sfcRainStdMS(:,j),piaOutKuMS(:,j),piaOutKaMS(:,j))
    endif
-
+   if(flagScanPattern_0.ne.flagScanPattern) then
+      print*, 'line', 1038
+      stop
+   end if
 
    do i=1,49
       if(ialg==1) then
@@ -1341,7 +1346,7 @@ do j=1,dPRData%n1c21
          emis_rms_NS(i,j,10) = sqrt(sum((dprRet%emis(i,j,1,6,1:nmemb1)-emissoutL(i,j,10))**2)/nmemb1)
          emis_rms_NS(i,j,11) = sqrt(sum((dprRet%emis(i,j,2,6,1:nmemb1)-emissoutL(i,j,11))**2)/nmemb1)
          emis_rms_NS(i,j,12:13) = emis_rms_NS(i,j,10)
-         print*, 'emis_std',emis_rms_NS(i,j,:)
+         !print*, 'emis_std',emis_rms_NS(i,j,:)
          !print '(2i5, 13F8.3)', i, j, emis_rms_NS(i,j,1:13)
       endif
 
@@ -1461,6 +1466,10 @@ do j=1,dPRData%n1c21
       if(i>0 .and. i<50 .and. ialg==1) then
 !begin  WSO 9/28/13 add rain flag including missing for bad scans
         call copyrainflags2_fs(dPRData%rainFlagBad(i,j), i-1, flagScanPattern)
+        if(flagScanPattern_0.ne.flagScanPattern) then
+           print*, 'line',1470
+           stop
+        end if
         call copyioqualitys2_fs(dPRData%ioqualityflagdpr(i,j), i-1)
         call copysnowices2_fs(dPRData%snowIceCover(i,j), i-1)
         call copyinitnws2_fs(initnw_MS(:, i, j), dPRRet%n9(:, i, j), i-1)
@@ -1511,6 +1520,10 @@ do j=1,dPRData%n1c21
               sfcRainMS(i,j), dprData%binRealSurface(i,j), &
               dprData%binZeroDegree(i,j), dprData%binClutterFree(i,j),&
               pType(j,i),flagScanPattern,sfcRainLiqFrac(i, j))
+         if(flagScanPattern_0.ne.flagScanPattern) then
+            print*, 'line',1524
+            stop
+         end if
          call copypwcs2_fs(pwc3DMS(:,i,j),pwc3DstdMS(:,i,j),i-1)
          call copylwcfracs2_fs(mlwc_fracMS(:,i,j),mrate_fracMS(:,i,j),i-1)
          if(sfcRainMS(i,j).ge.-0.001) then
@@ -1521,8 +1534,16 @@ do j=1,dPRData%n1c21
          
          call copy_tot_to_liqrate_kuka(i-1, rrate3DMS(:,i,j), &
               dPRData%node(:,i,j),flagScanPattern)
+         if(flagScanPattern_0.ne.flagScanPattern) then
+            print*, 'line',1538
+            stop
+         end if
          call copy_tot_to_liqwatercont_kuka(i-1, pwc3DMS(:,i,j), &
               dPRData%node(:,i,j),flagScanPattern)
+         if(flagScanPattern_0.ne.flagScanPattern) then
+            print*, 'line',1544
+            stop
+         end if
          call copyd0s2_fs(d03DMS(:,i,j),i-1)
          call copyenvtemps2_fs(dPRData%envTemp(:,i,j), env_nodes(:,i), i-1)
          call copysfcairtemps2_fs(dPRData%envSfcTemp(i,j),i-1)
@@ -1734,7 +1755,7 @@ do j=1,dPRData%n1c21
    else
       call writescan_fs()
    endif
-  
+   !print*, 'FSP2', j, flagScanPattern
 
 enddo
 end subroutine radarRetSub4_FS

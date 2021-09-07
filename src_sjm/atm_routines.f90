@@ -19,7 +19,17 @@ subroutine get_clw_profile(atm,nlev,clwp)
     endif
   end do
   LCL=i0
-  !print*, LCL, atm%hgt_lev(LCL), atm%temp_lev(LCL)
+
+!diagnostic
+!  if(LCL .le. 0) then
+!    do i=1,nlev
+!      write(6, '("i: ", i10, "  sfc_lev: ", f12.4, "  hgt_lev: ", f12.4, "  temp_lev: ", f12.4)') &
+!       i, atm%sfc_elev, atm%hgt_lev(i), atm%temp_lev(i)
+!    end do
+!    write(*, '("LCL: ", i10, "  atmheight: ", f12.4, "  atmtemp: ", f12.4)') LCL, atm%hgt_lev(LCL), atm%temp_lev(LCL)
+!  endif
+!end diagnostic
+
   do i=i0,nlev
     call get_es(atm%temp_lev(i), es)
     satQv = es/(es+(atm%press_lev(i)-es)*Rv/Rd)
@@ -29,6 +39,12 @@ subroutine get_clw_profile(atm,nlev,clwp)
       exit
     endif
   end do
+
+!diagnostic
+!  if(LCL .le. 0) then
+!    write(*, '("LCL: ", i10)') LCL 
+!  endif
+!end diagnostic
   
   !print*, LCL, atm%hgt_lev(LCL), atm%temp_lev(LCL)
   !print*, clwp
@@ -46,7 +62,7 @@ subroutine get_clw_profile(atm,nlev,clwp)
     !print*, cloudQv2
     
     Tavg = 0.5*(atm%temp_lev(i-1)+atm%temp_lev(i))
-    Pavg = (atm%press_lev(i)-atm%press_lev(i-1)) / log(atm%press_lev(i)/atm%press_lev(i-1))
+    Pavg = (atm%press_lev(i)-atm%press_lev(i-1)) / log(dble(atm%press_lev(i))/dble(atm%press_lev(i-1)))
     atm%cloud_water(i) = 1000.*(0.5*(cloudQv1+cloudQv2))*(100.*es/(Rv*Tavg)+100.*(Pavg-es)/(Rd*Tavg)) !g/m^3
 
     clwp_add = (atm%hgt_lev(i)-atm%hgt_lev(i-1))*atm%cloud_water(i)
@@ -137,10 +153,20 @@ subroutine calc_tpw(atm,nlev,tpw)
   
   real :: rhov_bot, rhov_top, Tv, Qv_sfc, Tavg, Pavg
   
+  real :: delp
   
   !calculate rhov in sfc to first above-surface layer
   Tavg = 0.5*(atm%t2m+atm%temp_lev(1))
-  Pavg = (atm%psfc-atm%press_lev(1)) / log(atm%psfc/atm%press_lev(1))
+!begin WSO 8/27/21; prevent psfc <= press_lev(1)
+  delp = 0.1
+  if(atm%psfc-atm%press_lev(1) > delp) then
+     Pavg = (atm%psfc-atm%press_lev(1)) / log(dble(atm%psfc)/dble(atm%press_lev(1)))
+  else
+     Pavg = delp / log(dble(atm%press_lev(1) + delp)/dble(atm%press_lev(1)))
+!     write(*, '("press(1): ", e15.6, "  delp: ", e15.6, "  (p+delp)/p: ", e15.6, "  log((p+delp)/p): ", e15.6, "  Pavg: ", e15.6)') &
+!      atm%press_lev(1), delp, dble(atm%press_lev(1) + delp)/dble(atm%press_lev(1)), log(dble(atm%press_lev(1) + delp)/dble(atm%press_lev(1))), Pavg
+  endif
+!end WSO 8/27/21
   
   rhov_top = 100.*atm%qv_lev(1)*Pavg/(Rd*Tavg*(1.+atm%qv_lev(1)*(Rv/Rd-1.)))
   !print*, rhov_top
