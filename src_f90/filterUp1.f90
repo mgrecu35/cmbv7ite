@@ -709,7 +709,7 @@ subroutine filterUpMS(dPRData,dPRRet, Xens,Yens,Yobs,Xup,tb,&
   do k=dPRData%node(1,i,j),dPRData%node(5,i,j)+1
 !  SFM  begin  07/29/2014; for M.Grecu  eliminate NANs
 !  SFM  begin  06/22/2014; for M.Grecu (unknown justification)
-     if( dPRData%zku1c21(k,i,j)>10 .and. dPRRet%MS%rrate(1,k,i,j)>0) then
+     if( dPRData%zku1c21(k,i,j)>12 .and. dPRRet%MS%rrate(1,k,i,j)>0) then
 !  SFM  end    06/22/2014
 !  SFM  end    07/29/2014
         nx=nx+1
@@ -969,7 +969,7 @@ subroutine filterUpMS(dPRData,dPRRet, Xens,Yens,Yobs,Xup,tb,&
   do k=dPRData%node(1,i,j),dPRData%node(5,i,j)+1
 !  SFM  begin  07/29/2014; for M.Grecu  eliminate NANs
 !  SFM  begin  06/22/2014; for M.Grecu (unknown justification)
-     if( dPRData%zku1c21(k,i,j)>10 .and. dPRRet%MS%rrate(1,k,i,j)>0) then
+     if( dPRData%zku1c21(k,i,j)>12 .and. dPRRet%MS%rrate(1,k,i,j)>0) then
 !  SFM  end    06/22/2014
         nx=nx+1
         if(sum(Xens(nx,1:nMemb1))/nMemb1>300) then

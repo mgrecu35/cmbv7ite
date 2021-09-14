@@ -407,6 +407,9 @@ do j=1,dPRData%n1c21
       if( dPRData%rainType(i,j)>0) then ! &
  !          .and. j>0 .and. j<dPRData%n1c21-2 )           &
 !      then
+         if(dPRData%node(1, i, j).gt.dPRData%node(5, i, j)) then
+            dPRData%node(1, i, j)=dPRData%node(5, i, j)
+         endif
          ntbpix2=ntbpix2+1
          !print*, i, j
          do k=dPRData%node(1, i, j),dPRData%node(5, i, j)
@@ -461,6 +464,15 @@ do j=1,dPRData%n1c21
             !print*, tbNoOcean(i,j,1:9)
             
          endif
+         if(i.eq.6.and.j.eq.117) then
+            print*, dprdata%node(:,i,j)
+            print*, dPRRet%sfcRainEns(i,j,1:nmemb1)
+            print*,'--------------------------------------'
+            print*, dPRRet%rrate(1:nmemb1,dPRData%node(5,i,j),i,j)
+            print*,'--------------------------------------'
+            print*, dPRRet%rrate(1:nmemb1,dPRData%node(5,i,j)-1,i,j)
+            !stop
+         endif
 !                   write(32) i,j,ichunk,dPRData%sigmaZeroKu(i,j), dPRData%sigmaZeroKa(i,j), dPRData%srtPIAKu(i,j), dPRData%dsrtPIAKu(i,j), dPRData%dsrtPIAKa(i,j), tb(i,j,1:9),hFreqPRg(i,j,:), &!tbRgrid(1:9,i,j+icL), &!scan/ray number, observed sigma_zero
 !          dPRRet%sfcRainEns(i,j,1:nmemb1), & !Sfc rain for each ens member
 !          dPRRet%sfcd0Ens(i,j,1:nmemb1), & !Sfc D0 for each ens member
@@ -498,6 +510,16 @@ do j=1,dPRData%n1c21
                  tb,dprRain,sfcRain,nmemb1,ic,i,j,nx,ny,wfractm,&
                  sigmaZeroVarKu, sigmaZeroVarKa, sigmaZeroCov,&
                  hFreqPRg(i,j,:),nubfc)
+            if(i.eq.6.and.j.eq.117) then
+               print*,'MS'
+               print*, dprdata%node(:,i,j)
+               print*, dPRRet%MS%sfcRainEns(i,j,1:nmemb1)
+               print*,'--------------------------------------'
+               print*, dPRRet%MS%rrate(1:nmemb1,dPRData%node(5,i,j),i,j)
+               print*,'--------------------------------------'
+               print*, dPRRet%MS%rrate(1:nmemb1,dPRData%node(5,i,j)-1,i,j)
+               !stop
+            endif
             do k=1,9
                tb0MS(i,j,k)=sum(dPRRet%MS%tb(i,j,ipolG(k),&
                     ifreqG(k),1:nmemb1))/nmemb1
@@ -534,7 +556,7 @@ do j=1,dPRData%n1c21
 !diagnostic
 !       write(*, '("early scan: ", i5, "  scene: ", i5, "  nodes: ", 5i5)') j, i, dPRData%node(1:5, i, j)
 !end diagnostic
-         do k=1+dPRData%node(1,i,j),1+dPRData%node(5,i,j)
+         do k=dPRData%node(1,i,j),1+dPRData%node(5,i,j)
 !            if(k < 1 .or. k > 88) write(*, '("bad k at: ", 3i10, "  min k: ", i10, "  max k: ", i10)') &
 !             i, j, k, 1+dPRData%node(1,i,j), 1+dPRData%node(5,i,j)
             rrate3D(k,i,j)=sum(dPRRet%rrate(1:nmemb1,k,i,j))/nmemb1
@@ -677,7 +699,7 @@ print*, 'before mlw'
 do j=1,dPRData%n1c21
    do i=1,49
       if(dPRData%rainType(i,j)>=100) then
-         do k=1+dPRData%node(1,i,j),1+dPRData%node(5,i,j)
+         do k=dPRData%node(1,i,j),1+dPRData%node(5,i,j)
             rrate3DMS(k,i,j)=sum(dPRRet%MS%rrate(1:nmemb1,k,i,j))/nmemb1
             rrate3DstdMS(k,i,j)=sqrt(sum((dPRRet%MS%rrate(1:nmemb1,k,i,j)-     &
                  rrate3DMS(k,i,j))**2)/(nmemb1-1))
