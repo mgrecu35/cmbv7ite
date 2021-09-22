@@ -35,7 +35,7 @@ subroutine filterUpNS(dPRData,dPRRet, Xens,Yens,Yobs,Xup,tb,&
   
   Xens(1,1:1*nMemb1)=(dPRRet%sfcRainEns(i,j,1:1*nmemb1))
   nx=1 
-  do k=dPRData%node(1,i,j),dPRData%node(5,i,j)+1
+  do k=max(1,dPRData%node(1,i,j)),dPRData%node(5,i,j)+1
 !  SFM  begin  07/29/2014; for M.Grecu  eliminate NANs
 !  SFM  begin  06/22/2014; for M.Grecu (unknonw justification)
 !begin  WSO 9/11/4 change zka1c21 to zku1c21
@@ -219,7 +219,7 @@ subroutine filterUpNS(dPRData,dPRRet, Xens,Yens,Yobs,Xup,tb,&
   dPRRet%sfcRainEns(i,j,1:1*nmemb1)=Xens(1,1:1*nMemb1)
 
 !begin  MG 9/18/13 remove spurious minus sign
-  do k=dPRData%node(1,i,j),dPRData%node(5,i,j)+1
+  do k=max(1,dPRData%node(1,i,j)),dPRData%node(5,i,j)+1
 !end    MG 9/18/13
 !  SFM  begin  07/29/2014; for M.Grecu eliminate NANs
 !  SFM  begin  06/22/2014; for M.Grecu (unknown justification)
@@ -313,7 +313,7 @@ subroutine filterUpNSLand(dPRData,dPRRet, Xens,Yens,Yobs,Xup,tb,dprRain,sfcRain,
 
   Xens(1,1:1*nMemb1)=(dPRRet%sfcRainEns(i,j,1:1*nmemb1))
   nx=1 
-  do k=dPRData%node(1,i,j),dPRData%node(5,i,j)+1
+  do k=max(1,dPRData%node(1,i,j)),dPRData%node(5,i,j)+1
 !  SFM  begin  07/29/2014; for M.Grecu  eliminate NANs
 !  SFM  begin  06/22/2014; for M.Grecu (unknonw justification)
 !begin  WSO 9/11/4 change zka1c21 to zku1c21
@@ -542,7 +542,7 @@ subroutine filterUpNSLand(dPRData,dPRRet, Xens,Yens,Yobs,Xup,tb,dprRain,sfcRain,
   endif
 
 !begin  MG 9/18/13 remove spurious minus sign
-  do k=dPRData%node(1,i,j),dPRData%node(5,i,j)+1
+  do k=max(1,dPRData%node(1,i,j)),dPRData%node(5,i,j)+1
 !end    MG 9/18/13
 !  SFM  begin  07/29/2014; for M.Grecu eliminate NANs
 !  SFM  begin  06/22/2014; for M.Grecu (unknown justification)
@@ -631,7 +631,7 @@ subroutine filterUpMS(dPRData,dPRRet, Xens,Yens,Yobs,Xup,tb,&
      call enkfwi1(j)
   endif
   nZKa=0
-  do k=dPRData%node(1,i,j),dPRData%node(5,i,j)+1
+  do k=max(1,dPRData%node(1,i,j)),dPRData%node(5,i,j)+1
 !  SFM  begin  06/22/2014; for M.Grecu (unknown justification)
      !print*, dPRData%zka1c21(k,i,j), dPRRet%z35mod0(1,k,i,j)
      if( dPRData%zka1c21(k,i,j)>15 .and. minval( dPRRet%z35mod0(1:1*nmemb1,k,i,j))>0) then
@@ -648,7 +648,7 @@ subroutine filterUpMS(dPRData,dPRRet, Xens,Yens,Yobs,Xup,tb,&
      call enkfwi1(nZka)
      call enkfwf(wfractm)
      call enkfwf(dPRData%freezH(i,j) /1000.)
-     do k=dPRData%node(1,i,j),dPRData%node(5,i,j)+1
+     do k=max(1,dPRData%node(1,i,j)),dPRData%node(5,i,j)+1
         call enkfwf(dPRData%zku1c21(k,i,j))
      enddo
      do k=1,nZka
@@ -658,7 +658,7 @@ subroutine filterUpMS(dPRData,dPRRet, Xens,Yens,Yobs,Xup,tb,&
         enddo
         call enkfwf(Yobs(k))
      enddo
-     do k=dPRData%node(1,i,j),dPRData%node(5,i,j)+1
+     do k=max(1,dPRData%node(1,i,j)),dPRData%node(5,i,j)+1
         do k1=1,nmemb1
            call enkfwf(dPRRet%MS%zKuEns(k1,k,i,j))
         enddo
@@ -702,11 +702,11 @@ subroutine filterUpMS(dPRData,dPRRet, Xens,Yens,Yobs,Xup,tb,&
   !print*, dPRData%node(1,i,j)+1,dPRData%node(5,i,j)+1
   if(dPRData%node(1,i,j)+1==1) then
      !print*,i,j
-     do k=dPRData%node(1,i,j),dPRData%node(5,i,j)+1
+     do k=max(1,dPRData%node(1,i,j)),dPRData%node(5,i,j)+1
         !print*, dPRData%zku1c21(k,i,j),  dPRRet%MS%rrate(1,k,i,j)
      end do
   end if
-  do k=dPRData%node(1,i,j),dPRData%node(5,i,j)+1
+  do k=max(1,dPRData%node(1,i,j)),dPRData%node(5,i,j)+1
 !  SFM  begin  07/29/2014; for M.Grecu  eliminate NANs
 !  SFM  begin  06/22/2014; for M.Grecu (unknown justification)
      if( dPRData%zku1c21(k,i,j)>12 .and. dPRRet%MS%rrate(1,k,i,j)>0) then
@@ -966,7 +966,7 @@ subroutine filterUpMS(dPRData,dPRRet, Xens,Yens,Yobs,Xup,tb,&
   nx=nx+1
   dPRRet%MS%sfcRainEns(i,j,1:1*nmemb1)=Xens(1,1:1*nMemb1)
   iprint=0
-  do k=dPRData%node(1,i,j),dPRData%node(5,i,j)+1
+  do k=max(1,dPRData%node(1,i,j)),dPRData%node(5,i,j)+1
 !  SFM  begin  07/29/2014; for M.Grecu  eliminate NANs
 !  SFM  begin  06/22/2014; for M.Grecu (unknown justification)
      if( dPRData%zku1c21(k,i,j)>12 .and. dPRRet%MS%rrate(1,k,i,j)>0) then
@@ -999,7 +999,7 @@ subroutine filterUpMS(dPRData,dPRRet, Xens,Yens,Yobs,Xup,tb,&
      endif
   enddo
   if(iprint==11) then
-     do k=dPRData%node(1,i,j)+1,dPRData%node(5,i,j)+1
+     do k=max(1,dPRData%node(1,i,j)),dPRData%node(5,i,j)+1
         if( dPRData%zku1c21(k,i,j)>12) then
            !print*, dPRData%zku1c21(k,i,j), dPRData%zka1c21(k,i,j)
         endif

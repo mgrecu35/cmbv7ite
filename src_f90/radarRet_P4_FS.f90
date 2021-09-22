@@ -412,7 +412,7 @@ do j=1,dPRData%n1c21
          endif
          ntbpix2=ntbpix2+1
          !print*, i, j
-         do k=dPRData%node(1, i, j),dPRData%node(5, i, j)
+         do k=max(1,dPRData%node(1, i, j)),min(dPRData%node(5, i, j)+1,88)
             dm3D_a(k,i,j)=sum(dPRRet%d0(1:nmemb1,k,i,j))/nmemb1
             dm3Dms_a(k,i,j)=sum(dPRRet%ms%d0(1:nmemb1,k,i,j))/nmemb1
             nw3d_a(k,i,j)=sum(dPRRet%log10dNw(1:nmemb1,k,i,j))/nmemb1
@@ -556,7 +556,7 @@ do j=1,dPRData%n1c21
 !diagnostic
 !       write(*, '("early scan: ", i5, "  scene: ", i5, "  nodes: ", 5i5)') j, i, dPRData%node(1:5, i, j)
 !end diagnostic
-         do k=dPRData%node(1,i,j),1+dPRData%node(5,i,j)
+         do k=max(1,dPRData%node(1,i,j)),1+dPRData%node(5,i,j)
 !            if(k < 1 .or. k > 88) write(*, '("bad k at: ", 3i10, "  min k: ", i10, "  max k: ", i10)') &
 !             i, j, k, 1+dPRData%node(1,i,j), 1+dPRData%node(5,i,j)
             rrate3D(k,i,j)=sum(dPRRet%rrate(1:nmemb1,k,i,j))/nmemb1
@@ -699,7 +699,7 @@ print*, 'before mlw'
 do j=1,dPRData%n1c21
    do i=1,49
       if(dPRData%rainType(i,j)>=100) then
-         do k=dPRData%node(1,i,j),1+dPRData%node(5,i,j)
+         do k=max(1,dPRData%node(1,i,j)),1+dPRData%node(5,i,j)
             rrate3DMS(k,i,j)=sum(dPRRet%MS%rrate(1:nmemb1,k,i,j))/nmemb1
             rrate3DstdMS(k,i,j)=sqrt(sum((dPRRet%MS%rrate(1:nmemb1,k,i,j)-     &
                  rrate3DMS(k,i,j))**2)/(nmemb1-1))
