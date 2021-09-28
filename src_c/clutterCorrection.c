@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "TK_2BCMB_hdf5.h"
+#include "math.h"
 
 extern float missingmod_mp_missing_r4_;
 extern short missingmod_mp_missing_i2_;
@@ -10,6 +11,7 @@ extern long missingmod_mp_missing_i4_;
 #define missing_i2c missingmod_mp_missing_i2_
 #define missing_i4c missingmod_mp_missing_i4_;
 float pRateCCTables[39][50];
+float pRate_bzd_Tables[2][2][71];
 FILE *foutD;
 void readcluttertables_(void)
 {
@@ -19,6 +21,19 @@ void readcluttertables_(void)
   for(i=0; i<39;i++)
     for(j=0;j<50;j++)
       fscanf(fout,"%g",&pRateCCTables[38-i][j]);
+  fclose(fout);
+  foutD=fopen("cluttCorectDiag.txt","w");
+}
+
+void readclutter_bzd_tables_(void)
+{
+  FILE *fout;
+  int i,j,idum;
+  fout=fopen("AncData/cluttCorectTables_bzd.txt","r");
+  for(i=0; i<71;i++)
+    fscanf(fout,"%i %g %g %g %g",&idum,&pRate_bzd_Tables[0][0][i],
+	   &pRate_bzd_Tables[0][1][i],&pRate_bzd_Tables[1][0][i],
+	   &pRate_bzd_Tables[1][1][i]);
   fclose(fout);
   foutD=fopen("cluttCorectDiag.txt","w");
 }
@@ -33,6 +48,31 @@ void estimated_sfc_precip1_(int *i, float *pRate1d, float *pRateStd1d, float *sf
   swathx.KuGMI.lowestUnclutteredBin[*i]=swathx.KuGMI.phaseBinNodes[*i][4];
   swathx.KuGMI.lowestEstimateBin[*i]=swathx.KuGMI.phaseBinNodes[*i][4];
   float liqFractR;
+  int sfc2=2*(*sfc), sfcType,iType;
+  if(swathx.KuGMI.Input.surfaceType[*i]==0)
+    {
+      sfc2=175;
+      sfcType=0;
+    }
+  else
+    sfcType=1;
+  //printf("%i %i %i %i\n",sfc2,*bzd,*cfb,swathx.KuGMI.Input.surfaceType[*i]);
+  int i1,i2;
+  double localZenith=swathx.KuGMI.Input.localZenithAngle[*i];
+  i1=(int)(0.5+((*cfb)-(*bzd))*cos(localZenith));
+  i2=(int)(0.5+(sfc2-(*bzd))*cos(localZenith));
+  i1+=30;
+  i2+=30;
+  if(i1>70)
+    i1=70;
+  if(i2>70)
+    i2=70;
+  if(i1<0)
+    i1=0;
+  if(i2<0)
+    i2=0;
+  if(i2<i1)
+    i2=i1;
   if(*ptype>0)
     {
       int n2;
@@ -70,7 +110,7 @@ void estimated_sfc_precip1_(int *i, float *pRate1d, float *pRateStd1d, float *sf
 	  //for(k=0;k<itop;k++)
 	  //  printf("%g ",pRateCCTables[k][fzClass]);
 	  //printf("\n");
-	  if(pRateCS[0]>0.1)
+	  if(pRateCS[0]>0.00001)
 	    {
 	      est_Surf_Precip=pRateCS[n1]/pRateCS[0]*pRate1d[(int)(*cfb/2)-1];
 	      swathx.KuGMI.estimSurfPrecipTotRate[*i]=est_Surf_Precip;
@@ -78,10 +118,20 @@ void estimated_sfc_precip1_(int *i, float *pRate1d, float *pRateStd1d, float *sf
 		*pRateStd1d[(int)(*cfb/2)-1];
 	      float est_Surf_Precip2=pRateCS[n2]/pRateCS[0]*pRate1d[(int)(*cfb/2)-1];
 	      swathx.KuGMI.FLG.estimPrecipInClutter[*i]=1;
-	      //printf("%g %g \n",est_Surf_Precip,*liqFract);
-	      //swathx.KuKaGMI.estimSurfPrecipLiqRate[*i]=est_Surf_Precip*(*liqFract);
 	      swathx.KuGMI.estimSurfPrecipLiqRate[*i]=est_Surf_Precip*liqFractR;
-	      //printf("sfcR1=%g sfcR2=%g \n",est_Surf_Precip,est_Surf_Precip2);
+	      float rRatio;
+	      if(*ptype==1)
+		iType=0;
+	      else
+		iType=1;
+	      if(rRatio>1.5)
+		rRatio=1.5;
+	      rRatio=pRate_bzd_Tables[sfcType][iType][i2]/\
+		pRate_bzd_Tables[sfcType][iType][i1];
+	      swathx.KuGMI.estimSurfPrecipTotRate[*i]=rRatio*
+		pRate1d[(int)(*cfb/2)-1];
+	      swathx.KuGMI.estimSurfPrecipLiqRate[*i]=rRatio*
+		pRate1d[(int)(*cfb/2)-1]*liqFractR;
 	    }
 	  else
 	    {
@@ -169,6 +219,33 @@ void estimated_sfc_precip2_(int *i, float *pRate1d, float *pRateStd1d, float *sf
   float est_Surf_Precip=*sfcRain;
   float pRateCS[40];
   float liqFractR;
+  //float liqFractR;
+  int sfc2=2*(*sfc),sfcType, iType;
+  if(swathx.KuGMI.Input.surfaceType[*i]==0)
+    {
+      sfc2=175;
+      sfcType=0;
+    }
+  else
+    sfcType=1;
+  //printf("%i %i %i %i\n",sfc2,*bzd,*cfb,swathx.KuGMI.Input.surfaceType[*i]);
+  int i1,i2;
+  double localZenith=swathx.KuGMI.Input.localZenithAngle[*i];
+  i1=(int)(0.5+((*cfb)-(*bzd))*cos(localZenith));
+  i2=(int)(0.5+(sfc2-(*bzd))*cos(localZenith));
+  i1+=30;
+  i2+=30;
+  if(i1>70)
+    i1=70;
+  if(i2>70)
+    i2=70;
+  if(i1<0)
+    i1=0;
+  if(i2<0)
+    i2=0;
+  if(i2<i1)
+    i2=i1;
+
   //printf("scanPattern=%i %i \n",*flagScanPattern,*i);
   swathx.KuKaGMI.FLG.scanPatternFlag=*flagScanPattern;
   swathx.KuGMI.FLG.scanPatternFlag=0;//*flagScanPattern;
@@ -216,9 +293,20 @@ void estimated_sfc_precip2_(int *i, float *pRate1d, float *pRateStd1d, float *sf
 		*pRateStd1d[(int)(*cfb/2)-1];
 	      float est_Surf_Precip2=pRateCS[n2]/pRateCS[0]*pRate1d[(int)(*cfb/2)-1];
 	      swathx.KuKaGMI.FLG.estimPrecipInClutter[*i]=1;
-	      //    printf("%g %g \n",est_Surf_Precip,*liqFract);
 	      swathx.KuKaGMI.estimSurfPrecipLiqRate[*i]=est_Surf_Precip*liqFractR;
-	      //printf("sfcR1=%g sfcR2=%g \n",est_Surf_Precip,est_Surf_Precip2);
+	      float rRatio;
+	      if(*ptype==1)
+		iType=0;
+	      else
+		iType=1;
+	      if(rRatio>1.5)
+		rRatio=1.5;
+	      rRatio=pRate_bzd_Tables[sfcType][iType][i2]/\
+		pRate_bzd_Tables[sfcType][iType][i1];
+	      swathx.KuKaGMI.estimSurfPrecipTotRate[*i]=rRatio*
+		pRate1d[(int)(*cfb/2)-1];
+	      swathx.KuKaGMI.estimSurfPrecipLiqRate[*i]=rRatio*
+		pRate1d[(int)(*cfb/2)-1]*liqFractR;
 	    }
 	  else
 	    {

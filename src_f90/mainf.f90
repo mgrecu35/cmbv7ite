@@ -150,6 +150,7 @@ subroutine mainfort(jobname, f1ctmi1,f1ctmi2,f1ctmi3,                    &
   call cloud_init(nmfreq) 
   call initWFlag(nmfreq)
   call readcluttertables()
+  call readclutter_bzd_tables()
   call init_nbin
 !begin  WSO 9/14/13 initial missing flags in missingMod
   call init_missing_flags
