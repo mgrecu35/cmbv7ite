@@ -240,10 +240,10 @@ SUBROUTINE gmi_land_ret(gdata, ret) !retrieval variables
       ret%stpw_init = tpw_rms
       ret%stskin_init = tskin_rms
       !print*, ret%tpw_init, ret%tskin_init, ret%stpw_init, ret%stskin_init
-      ret%w10m_init = -99.
-      ret%sw10m_init = -99.
-      ret%clwp_init = -99.
-      ret%sclwp_init = -99.
+      ret%w10m_init = -9999.9
+      ret%sw10m_init = -9999.9
+      ret%clwp_init = -9999.9
+      ret%sclwp_init = -9999.9
       !print*, ret%tpw_init, ret%tskin_init
       !print*, ret%stpw_init, ret%stskin_init
     endif
@@ -315,7 +315,7 @@ SUBROUTINE gmi_land_ret(gdata, ret) !retrieval variables
       !print*, ret%PIAKu, ret%PIAKa
       !ret%PIAKu = -99.
       !ret%PIAKa = -99.
-      ret%sim_tb = -99.
+      ret%sim_tb = -9999.9
       ret%sim_tb(gmi_ch(1:nobs)) = tb_out(gmi_ch(1:nobs))
       
       !diagnostic output
@@ -345,27 +345,27 @@ SUBROUTINE gmi_land_ret(gdata, ret) !retrieval variables
 !       tskin_rms = sqrt(tskin_rms/10.)
       !ret%tpw_ret = tpw_mean
       ret%tskin_ret = gdata%anc_tskin!tskin_mean
-      ret%stpw_ret = -99.!tpw_rms
-      ret%stskin_ret = -99.!tskin_rms
-      ret%w10m_ret = -99.
-      ret%sw10m_ret = -99.
-      ret%aw10m = -99.
-      ret%relAz_init = -99.
-      ret%srelAz_init = -99.
-      ret%relAz_ret = -99.
-      ret%srelAz_ret = -99.
-      ret%arelAz = -99.
+      ret%stpw_ret = -9999.9!tpw_rms
+      ret%stskin_ret = -9999.9!tskin_rms
+      ret%w10m_ret = -9999.9
+      ret%sw10m_ret = -9999.9
+      ret%aw10m = -9999.9
+      ret%relAz_init = -9999.9
+      ret%srelAz_init = -9999.9
+      ret%relAz_ret = -9999.9
+      ret%srelAz_ret = -9999.9
+      ret%arelAz = -9999.9
       ret%clwp_init = gdata%anc_clwp
-      ret%clwp_ret = -99.!exp(x(nvar)*xstd(nvar)+xbar(nvar))
-      ret%sclwp_ret = -99.!xstd(nvar)*sqrt(sx(nvar,nvar))
+      ret%clwp_ret = -9999.9!exp(x(nvar)*xstd(nvar)+xbar(nvar))
+      ret%sclwp_ret = -9999.9!xstd(nvar)*sqrt(sx(nvar,nvar))
       ret%aclwp = -99.!A_Matrix(nvar,nvar)
       ret%specularity=x(nvar)*xstd(nvar)+xbar(nvar)
       !print*, ret%tpw_ret, ret%tskin_ret
       !print*, ret%stpw_ret, ret%stskin_ret
       !print*, ret%specularity
       ret%emis = gdata%emis
-      ret%semis = -99.
-      ret%aemis = -99.
+      ret%semis = -9999.9
+      ret%aemis = -9999.9
       do i=1,nemis
         ret%semis(emis_ch(i)) = sqrt(sx(nvar-(nemis+1)+i,nvar-(nemis+1)+i))*xstd(nvar-(nemis+1)+i)
         ret%aemis(emis_ch(i)) = A_Matrix(nvar-(nemis+1)+i,nvar-(nemis+1)+i) 
