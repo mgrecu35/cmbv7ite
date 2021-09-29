@@ -308,10 +308,10 @@ SUBROUTINE gmi_land_ret(gdata, ret) !retrieval variables
       ret%stpw_init = tpw_rms
       ret%stskin_init = tskin_rms
       !print*, ret%tpw_init, ret%tskin_init, ret%stpw_init, ret%stskin_init
-      ret%w10m_init = -99.
-      ret%sw10m_init = -99.
-      ret%clwp_init = -99.
-      ret%sclwp_init = -99.
+      ret%w10m_init = -9999.9
+      ret%sw10m_init = -9999.9
+      ret%clwp_init = -9999.9
+      ret%sclwp_init = -9999.9
       !print*, ret%tpw_init, ret%tskin_init
       !print*, ret%stpw_init, ret%stskin_init
     endif

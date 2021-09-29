@@ -272,6 +272,8 @@ subroutine calctb(sfc_wind,umu,kext,salb,asym,node,ic,jc,&
              kexttot(ibot:nlayer), salbtot(ibot:nlayer), &
              asymtot(ibot:nlayer), fisot, emis, &
              ebar, lambert, prnt)
+        tb(npol*nmfreqm+ifreq)=max(tb(npol*nmfreqm+ifreq),330.0)
+        tb(npol*nmfreqm+ifreq)=min(tb(npol*nmfreqm+ifreq),30.0)
         if(ifreq>5 .and. imemb==-1 .and. iprof==38 .and. jprof==190) &
              print*, tb(npol*nmfreqm+ifreq), ifreq, npol
         emtb(npol*nmfreqm+ifreq)=&
