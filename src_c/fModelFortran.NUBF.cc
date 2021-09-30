@@ -74,7 +74,7 @@ int itype        : scalar, i
 float dr         : scalar, radar gatesize
 int nodes[5]     : vector, the 5 nodes defining the storm structure
 int nNodes       : scalar, # nodes defining the log10dN profile
-int *nodeP       : vector, contains the locations of the nNodes nodes
+int *nodeP      : vector, contains the locations of the nNodes nodes
 float *log10dNP  : vector, contains the values of log10dN of the nNodes nodes
 int ic           : scalar, index of RH profile (from 1 to nc)
                  : nc is the number of possible RH profiles see cloud.f90
@@ -460,7 +460,7 @@ float *log10dN   : vector, returns retrieved log10(N0/N0ref)
 
   for(i=0;i<nNodes;i++)
     {
-      log10dNP[i]=log10dN[nodeP[i]];
+      //log10dNP[i]=log10dN[nodeP[i]];
     }
 
 //  SFM  begin  07/29/2014; for M.Grecu  to eliminate NAN data
