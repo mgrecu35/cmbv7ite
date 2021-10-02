@@ -503,8 +503,11 @@ subroutine radarRetSub2(nmu2,  nmfreq2,   icL, tbRgrid,               &
   pia35m=0.
   print*, gmi2Grid%xmin, gmi2Grid%ymin
   !return 
+  tbRgrid=-9999
   do j=1,dPRData%n1c21
+  !do j=108,108
      do i=1,49
+     !do i=25,25      
         eLon=dPRData%xlon(i,j)
         eLat=dPRData%xlat(i,j)
         call getwfraction(eLat,&
@@ -1215,6 +1218,15 @@ subroutine radarRetSub2(nmu2,  nmfreq2,   icL, tbRgrid,               &
   enddo
   print*, maxval(dPRRet%log10dNw)
   print*, minval(dPRRet%log10dNw)
+  print*, dPRData%node(:,25,108)
+  print*, 'r85=',sum(dprret%rrate(:,85,25,108))/nmemb1
+  print*, 'r86=',sum(dprret%rrate(:,86,25,108))/nmemb1
+  print*, 'n85=',sum(dprret%log10dnw(:,85,25,108))/nmemb1
+  print*, 'n86=',sum(dprret%log10dnw(:,86,25,108))/nmemb1
+  print*, sum(dprret%d0(:,85,25,108))/nmemb1
+  print*, sum(dprret%d0(:,86,25,108))/nmemb1
+
+  !stop
   !print*, dPRRet%tb(:,:,1,1,1)
   !print*,tbRgrid(7,:,1:300)
   !stop
@@ -1398,6 +1410,8 @@ subroutine radarRetSub3(nmu2,  nmfreq2,   icL, tbRgrid,               &
   !tbRgrid(1:9,i,j+icL)
   nf=9
   !call endprofs()
+  !print*, 'tb=',maxval(tb(:,:,1:9))
+  !print*, 'tbObs=',maxval(tbRgrid(1:9,:,:))
   !print*, maxval(tbRgrid(1:9,1:49,ic+1:ic+dPRData%n1c21))
   call setoptvars(covTb(1:49,1:dPRData%n1c21,1:9,1:9),&
        invCovTb(1:49,1:dPRData%n1c21,1:9,1:9),tbMean(1:49,1:dPRData%n1c21,1:9),&
@@ -1413,6 +1427,10 @@ subroutine radarRetSub3(nmu2,  nmfreq2,   icL, tbRgrid,               &
   tbout2dNoOcean=-99
   iconv=1
   print*, 'before conv'
+  !print*, 'tb0=',maxval(tb0(:,:,1:9))
+  !print*, 'tbmean=',maxval(tbmean(:,:,1:9))
+  !stop
+  print*, maxval(tbout2D), maxval(tbout2dnoocean)
   if(iconv==1) then
      call convallfreq(actOb,tb0(:,:,1:9),tbMean(:,:,1:9),&
           invCovTb(:,:,1:9,1:9),&

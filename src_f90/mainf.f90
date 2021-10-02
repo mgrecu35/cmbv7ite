@@ -176,7 +176,7 @@ subroutine mainfort(jobname, f1ctmi1,f1ctmi2,f1ctmi3,                    &
        allocate(ip(nMF), iGMIChan(nMF), iSimF(nMF), iGMIf(nMF))
   
   nPrScanM = 300; ngates=nbin; ndPRrays=49;
-  nGMIMax  = 3700; nGMIS1=9; nGMIS2=4; nGMIrays=221;
+  nGMIMax  = 3900; nGMIS1=9; nGMIS2=4; nGMIrays=221;
   gridData%dx=0.05
   call readdmnw()
 
@@ -403,6 +403,8 @@ subroutine mainfort(jobname, f1ctmi1,f1ctmi2,f1ctmi3,                    &
   !stop
   PRINT *,'Number 1CGMI reads     : ',ngmi1, ngmi2, ngmi3, '   ', ngmi_total
   !print*, gmiData%secondOfDay(ngmi1+1:(ngmi_total-ngmi3))
+  !print*, gmiData%secondOfDay(1:(ngmi_total))
+  !stop
   PRINT *,'File read status 1CGMI : ',st_1, st_2, st_3
 
 !  SFM  end    12/06/2013  reworked checks for nil and dead files
@@ -601,6 +603,7 @@ subroutine do_chunk(i,ialg, idir)
      gmistart_sec = gmiData%secondOfDay(1)
   endif
   !print*, dprstart_sec, gmistart_sec
+  
   do j=1,ngmi_total
      if(gmiData%secondOfDay(j) .lt. gmistart_sec) gmiData%secondOfDay(j)=gmiData%secondOfDay(j)+86400
   end do
@@ -773,6 +776,8 @@ subroutine do_chunkx(i,ialg, idir)
      gmistart_sec = gmiData%secondOfDay(1)
   endif
   !print*, dprstart_sec, gmistart_sec
+  !print*, gmiData%secondOfDay
+  !stop
   do j=1,ngmi_total
      if(gmiData%secondOfDay(j) .lt. gmistart_sec) gmiData%secondOfDay(j)=gmiData%secondOfDay(j)+86400
   end do
@@ -803,9 +808,11 @@ subroutine do_chunkx(i,ialg, idir)
   if(iEnd<ngmi_total) iEnd=iEnd+1
   iEnd=min(ngmi_total,iEnd+70)
   iStart=max(1,iStart-70)
-  print*,  'istart=',iStart,iEnd, i
+  !print*,  'istart=',iStart,iEnd, i
+  !stop
   call reSampleGMI(gmiData,iStart,iEnd,gmi2Grid,i)
-  
+  !print*, maxval(gmiData%gmiS13(1:9,:,:))
+  !stop
   sysdN=0.0
   sysdN=-.25 !new calibration !-0.25 ITE
   print*, 'allocate dPRRet'

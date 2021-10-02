@@ -216,6 +216,7 @@ subroutine radarRetSub4_FS(nmu2,  nmfreq2,   icL, tbRgrid,               &
      !print*,i
      !print*, tbout2D(i,:,1)
   end do
+  print*, maxval(tbout2D), maxval(tbout2dnoocean)
   !stop
   if(iconv==1) then
    call updateTbs(dPRData%n1c21,tbObs(:,:,1:9),&
@@ -636,9 +637,9 @@ do j=1,dPRData%n1c21
              depth = (k - 1 - dPRData%node(2,i,j)) * gatelength
 
              if(dPRData%rainType(i,j)<200) then  !stratiform
-               call interp_melt_percentages(depthBB, depthML, &
-                mu_mean(i, j), d03D(k, i, j), depth, mlwc_frac(k - dPRData%node(2,i,j), i, j), &
-                mrate_frac(k - dPRData%node(2,i,j), i, j))
+                call interp_melt_percentages(depthBB, depthML, &
+                     mu_mean(i, j), d03D(k, i, j), depth, mlwc_frac(k - dPRData%node(2,i,j), i, j), &
+                     mrate_frac(k - dPRData%node(2,i,j), i, j))
              else  !convective or undefined
                 mlwc_frac(k - dPRData%node(2,i,j), i, j) = depth / depthML
                 mrate_frac(k - dPRData%node(2,i,j), i, j) = depth / depthML
@@ -822,7 +823,7 @@ do j=1,dPRData%n1c21
 enddo
 print*, 'before out'
 
-print*, maxval(tbout2D), maxval(tbout2dnoocean)
+
 40 format(14(F7.2,1x))
 !print*, tb0(24,:,1)
 !print*, tbMean(24,:,1)
@@ -995,6 +996,7 @@ print*, 'oe_tbs'
 !stop
 
 !stop
+print*, dPRData%n1c21
 do j=1,dPRData%n1c21
    if(ialg==2) then
       call frominputt(st_2adpr)
@@ -1775,6 +1777,7 @@ do j=1,dPRData%n1c21
    if(ialg==2) then
       call writescant()
    else
+      !print*, i-1, 'write scan'
       call writescan_fs()
    endif
    !print*, 'FSP2', j, flagScanPattern

@@ -1331,6 +1331,10 @@ enddo
 !print*, scLonPR
 !print*, scLatPR
 
+print*, sum(dprret%d0(:,85,25,108))/nmemb1
+print*, sum(dprret%d0(:,86,25,108))/nmemb1
+
+stop
 print*, maxval(dZms)  !!MG addition Feb 10, 2017
 !print*,'iactOb=',iactob
 !stop
