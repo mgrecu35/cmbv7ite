@@ -1204,7 +1204,7 @@ void copytbouts2_fs_(float *tbout, int *i)
   extern L2BCMB_SWATHS swathx;
 //begin  WSO 9/16/13
   for(k=0;k<13;k++)
-    if(tbout[k] > -90.)
+    if(tbout[k] > 1.)
       swathx.KuKaGMI.simulatedBrightTemp[*i][k]=tbout[k];
     else
       swathx.KuKaGMI.simulatedBrightTemp[*i][k]=missing_r4c;

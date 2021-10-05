@@ -1540,6 +1540,7 @@ do j=1,dPRData%n1c21
          call copynws2_fs(log10NwMean, i-1)
          call copymus2_fs( mu_mean_prof,dPRRet%n9(:,i,j),i-1)
          call copyrrates2_fs(rrate3DMS(:,i,j),rrate3DstdMS(:,i,j),i-1)
+         call copynodess2_fs(dPRData%node(:,i,j),i-1)
          call estimated_sfc_precip2(i-1, rrate3DMS(:,i,j),rrate3DstdMS(:,i,j),&
               sfcRainMS(i,j), dprData%binRealSurface(i,j), &
               dprData%binZeroDegree(i,j), dprData%binClutterFree(i,j),&
@@ -1749,7 +1750,7 @@ do j=1,dPRData%n1c21
          env_nodes(:,i)=missing_i4
       endif
       call copyenvqvs2_fs(dPRData%envQv(:,i,j), env_nodes(:,i), i-1)
-      call copynodess2_fs(dPRData%node(:,i,j),i-1)
+      
       call copy_oepianonrain_kukagmi(dPRData%OEpiaNonRain(:,i,j), i-1)
       call copy_oeqv_kukagmi(dPRData%OEQv(:,i,j),env_nodes(:,i), i-1)
       call copy_oetemp_kukagmi(dPRData%OETemp(:,i,j),env_nodes(:,i), i-1)

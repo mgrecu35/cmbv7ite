@@ -245,6 +245,8 @@ void estimated_sfc_precip2_(int *i, float *pRate1d, float *pRateStd1d, float *sf
 	swathx.KuKaGMI.nearSurfPrecipTotRate[*i];
       swathx.KuKaGMI.estimSurfPrecipLiqRate[*i]=rRatio*
 	swathx.KuKaGMI.nearSurfPrecipTotRate[*i]*liqFractR;
+      swathx.KuKaGMI.estimSurfPrecipTotRateSigma[*i]=rRatio*
+	pRateStd1d[(int)(*cfb/2)-1];
     }
   else
     {
