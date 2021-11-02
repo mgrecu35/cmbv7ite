@@ -463,12 +463,15 @@ void copy_tot_to_liqwatercont_ku_(int *ij, float *precipTot, int *node)
       }
     else
       swathx.KuGMI.precipLiqWaterCont[*ij][i]=missing_r4c;
-  for(i=node[3]+1;i<=node[4];i++)
+  int node4=node[4]+1;
+  if(node4>87)
+    node4=87;
+  for(i=node[3]+1;i<=node4;i++)
     if(precipTot[i]>=-1e-9)
-      	swathx.KuGMI.precipLiqWaterCont[*ij][i]=precipTot[i];
+      swathx.KuGMI.precipLiqWaterCont[*ij][i]=precipTot[i];
     else
       swathx.KuGMI.precipLiqWaterCont[*ij][i]=missing_r4c;
-  for(i=node[4];i<88;i++)
+  for(i=node[4]+1;i<88;i++)
     swathx.KuGMI.precipLiqWaterCont[*ij][i]=missing_r4c;
 }
 
@@ -489,12 +492,15 @@ void copy_tot_to_liqrate_ku_(int *ij, float *precipTot, int *node)
       }
     else
       swathx.KuGMI.precipLiqRate[*ij][i]=missing_r4c;
-  for(i=node[3]+1;i<=node[4];i++)
+  int node4=node[4]+1;
+  if(node4>87)
+    node4=87;
+  for(i=node[3]+1;i<=node4;i++)
     if(precipTot[i]>=-1e-9)
       	swathx.KuGMI.precipLiqRate[*ij][i]=precipTot[i];
     else
       swathx.KuGMI.precipLiqRate[*ij][i]=missing_r4c;
-  for(i=node[4];i<88;i++)
+  for(i=node[4]+1;i<88;i++)
     swathx.KuGMI.precipLiqRate[*ij][i]=missing_r4c;
 }
 void copy_tot_to_liqrate_kuka_(int *ij, float *precipTot, int *node, int *scanPatternFlag)
@@ -521,12 +527,15 @@ void copy_tot_to_liqrate_kuka_(int *ij, float *precipTot, int *node, int *scanPa
      }
    else
      swathx.KuKaGMI.precipLiqRate[*ij][i]=missing_r4c;
- for(i=node[3]+1;i<=node[4];i++)
+ int node4=node[4]+1;
+ if(node4>87)
+   node4=87;
+ for(i=node[3]+1;i<=node4;i++)
    if(precipTot[i]>=-1e-9)
      swathx.KuKaGMI.precipLiqRate[*ij][i]=precipTot[i];
    else
      swathx.KuKaGMI.precipLiqRate[*ij][i]=missing_r4c;
- for(i=node[4];i<88;i++)
+ for(i=node[4]+1;i<88;i++)
    swathx.KuKaGMI.precipLiqRate[*ij][i]=missing_r4c;
 }
 			  //'precipLiqWaterCont'
@@ -555,12 +564,15 @@ void copy_tot_to_liqwatercont_kuka_(int *ij, float *precipTot, int *node, int *s
      }
    else
      swathx.KuKaGMI.precipLiqWaterCont[*ij][i]=missing_r4c;
- for(i=node[3]+1;i<=node[4];i++)
+ int node4=node[4]+1;
+ if(node4>87)
+   node4=87;
+ for(i=node[3]+1;i<=node4;i++)
    if(precipTot[i]>=-1e-9)
      swathx.KuKaGMI.precipLiqWaterCont[*ij][i]=precipTot[i];
    else
      swathx.KuKaGMI.precipLiqWaterCont[*ij][i]=missing_r4c;
- for(i=node[4];i<88;i++)
+ for(i=node[4]+1;i<88;i++)
    swathx.KuKaGMI.precipLiqWaterCont[*ij][i]=missing_r4c;
 }
 			  //'precipLiqWaterCont'

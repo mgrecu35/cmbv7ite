@@ -861,7 +861,11 @@ do i=1,49
       z13(j,i,:)=zcKu3DMS(:,i,j)
       do k=1,88
          if(dPRData%rainType(i,j)>=100) then
-            nw3d(j,i,k)=sum(dPRRet%MS%log10dNw(1:nmemb1,k,i,j))/nmemb1
+            if(k>=dPRData%node(1,i,j).and.k<=dPRData%node(5,i,j)) then
+               nw3d(j,i,k)=sum(dPRRet%MS%log10dNw(1:nmemb1,k,i,j))/nmemb1
+            else
+               nw3d(j,i,k)=-0.5
+            endif
          else
             nw3d(j,i,k)=-0.5
          endif
@@ -905,6 +909,10 @@ enddo
 !idir=1
 print*, 'idir_inside=', idir
 !idir=-idir
+!print*, maxval(nw3d)
+!print*, minval(nw3d)
+!stop
+print*,iiad
 if(iiad==1) then
    call frteprep(binNodes,pRate,swc3d,pRateOut,swcOut,nwOut,z13,emiss2d,&
         envNode,pType,&
@@ -1516,7 +1524,7 @@ do j=1,dPRData%n1c21
 !begin  WSO 8/19/13 change dNw to Nw and add mu
         if(dPRData%rainType(i,j)>=100) then
             do k=1,88
-               if(k>=dPRData%node(1,i,j).and.k<=dPRData%node(5,i,j)) then
+               if(k>=dPRData%node(1,i,j).and.k<=dPRData%node(5,i,j)+1) then
                   log10NwMean(k)=sum(dPRRet%MS%log10dNw(1:nmemb1,k,i,j))/nmemb1 + &
                        log10(8.e+6)
                   mu_mean_prof(k) = mu_meanMS(i, j)
