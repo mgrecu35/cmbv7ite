@@ -1207,7 +1207,7 @@ do j=1,dPRData%n1c21
 !begin  WSO 8/19/13 change dNw to Nw and add mu
       if(dPRData%rainType(i,j)>=100) then
          do k=1,88
-            if(k>=dPRData%node(1,i,j).and.k<=dPRData%node(5,i,j)) then
+            if(k>=dPRData%node(1,i,j)+1.and.k<=dPRData%node(5,i,j)+1) then
                log10NwMean(k)=sum(dPRRet%log10dNw(1:nmemb1,k,i,j))/nmemb1 + &
                     log10(8.e+6)
                log10NwMean_a(k)=nw3d_a(k,i,j) + &
@@ -1524,7 +1524,7 @@ do j=1,dPRData%n1c21
 !begin  WSO 8/19/13 change dNw to Nw and add mu
         if(dPRData%rainType(i,j)>=100) then
             do k=1,88
-               if(k>=dPRData%node(1,i,j).and.k<=dPRData%node(5,i,j)+1) then
+               if(k>=dPRData%node(1,i,j)+1.and.k<=dPRData%node(5,i,j)+1) then
                   log10NwMean(k)=sum(dPRRet%MS%log10dNw(1:nmemb1,k,i,j))/nmemb1 + &
                        log10(8.e+6)
                   mu_mean_prof(k) = mu_meanMS(i, j)
