@@ -58,7 +58,7 @@ subroutine getscattH(binNodes,pRate,z13,emiss,envNode,pType,&
   do k=11, min(binNodes(i,j,3)-1,clutFree(i,j))
      i1=i+int((88-k)*dx/dx0+0.5)*idir
      if(i1<1) i1=1
-     if(i1>nscans) i1=nscans
+     if(i1>ncscans) i1=ncscans
      if (pType(i1,j)>0 .and. z13(i1,j,k+1)>10 ) then
         !if(i1>nscans) i1=nscans
         !if(i1<1) i1=1
@@ -82,13 +82,13 @@ subroutine getscattH(binNodes,pRate,z13,emiss,envNode,pType,&
            asym2=0
         end if
         if( isnan(kext(1)) .or. maxval(kext)>1.9e5) then
-           !print*, z13(i1,j,k+1), nw3d(i1,j,k+1), n0w1,binNodes(i1,j,:), f, df
-           !print*, i, j, i1, k
-           !print*, kext
-           !print*, salb
-           !print*, asym
-           !istop=1
-           !stop
+           print*, z13(i1,j,k+1), nw3d(i1,j,k+1), n0w1,binNodes(i1,j,:), f, df
+           print*, i, j, i1, k
+           print*, kext
+           print*, salb
+           print*, asym
+           istop=1
+           stop
            if(n0w1>1) then 
               n0w1=1
            else
@@ -124,7 +124,7 @@ subroutine getscattH(binNodes,pRate,z13,emiss,envNode,pType,&
   end if
   do k=binNodes(i,j,3), binNodes(i,j,5)
      i1=i+int((88-k)*dx/dx0+0.5)*idir
-     if(i1>nscans) i1=nscans
+     if(i1>ncscans) i1=ncscans
      if(i1<1) i1=1
      if (pType(i1,j)>0) then
         if(nw3d(i1,j,k+1)>3.5) nw3d(i1,j,k+1)=3.5
@@ -190,9 +190,9 @@ end subroutine getscattH
 
 subroutine updatepfields(binNodes,pRate,swc3d,z13,emiss,envNode,pType,&
      qv3D,press3D,airTemp3D,nw3d,nscans,npixs,nlev,nchans,idir,&
-     i,j,nfreq,df,dsrate,clutFree)
+     i,j,nfreq,df,dsrate,clutFree, ncscans)
   implicit none
-  integer :: nscans,npixs,nlev, nchans
+  integer :: nscans,npixs,nlev, nchans, ncscans
   integer :: nfreq, idir
   integer :: clutFree(nscans,npixs)
   real :: pRate(nscans,npixs,nlev),swc3d(nscans,npixs,nlev)
@@ -224,7 +224,7 @@ subroutine updatepfields(binNodes,pRate,swc3d,z13,emiss,envNode,pType,&
   asymH=0
   do k=11, min(binNodes(i,j,3)-1,clutFree(i,j))
      i1=i+int((88-k)*dx/dx0+0.5)*idir
-     if(i1>nscans) i1=nscans
+     if(i1>ncscans) i1=ncscans
      if(i1<1) i1=1
      if (pType(i1,j)>0 .and. z13(i1,j,k+1)>0 ) then
         f= (k-binNodes(i1,j,1))/ &
@@ -249,7 +249,7 @@ subroutine updatepfields(binNodes,pRate,swc3d,z13,emiss,envNode,pType,&
   enddo
   do k=binNodes(i,j,3), binNodes(i,j,5)
      i1=i+int((88-k)*dx/dx0+0.5)*idir
-     if(i1>nscans) i1=nscans
+     if(i1>ncscans) i1=ncscans
      if(i1<1) i1=1
      if (pType(i1,j)>0) then
         call getrainp(nw3d(i1,j,k+1),pRate(i1,j,k+1),kext,salb,asym,nfreq)
@@ -313,7 +313,7 @@ subroutine slant1d(binNodes,pRate,z13,emiss,envNode,pType,&
   !ifreqG=(/1,1,2,2,3,4,4,5,5,6,6,7,8/)
   call getscattH(binNodes,pRate,z13,emiss,envNode,pType,&
        qv3D,press3D,airTemp3D,nw3d,nscans,npixs,nlev,nchans,idir,&
-       i,j,nfreq,df,kextH_u,salbH_u,asymH_u, dsrate, clutFree, swc3d, nscans)
+       i,j,nfreq,df,kextH_u,salbH_u,asymH_u, dsrate, clutFree, swc3d, ncscans)
   call getscattH(binNodes,pRate,z13,emiss,envNode,pType,&
        qv3D,press3D,airTemp3D,nw3d,nscans,npixs,nlev,nchans,-idir,&
        i,j,nfreq,df,kextH_d,salbH_d,asymH_d, dsrate, clutFree, swc3d, ncscans)
@@ -467,8 +467,8 @@ subroutine  frteprep(binNodes,pRate,swc3d,pRateOut,swcOut,nwOut,z13,emiss,envNod
   open(11,file='diagnost.txt',form='formatted',&
        status='unknown',action='write')
   oe_tbs=-99.
-  print*, maxval(nw3d)
-  print*, minval(nw3d)
+  print*, 'maxval', maxval(nw3d(1:nscans_act,:,:))
+  print*, 'minval', minval(nw3d(1:nscans_act,:,:))
   !stop
   do i=1,nscans_act
      do j=2,48!npixs
@@ -515,7 +515,7 @@ subroutine  frteprep(binNodes,pRate,swc3d,pRateOut,swcOut,nwOut,z13,emiss,envNod
            if(dsrate<0.0001) dsrate=0.0001
            call slant1d(binNodes,pRate,z13,emiss,envNode,pType,&
                 qv3D,press3D,airTemp3D,nw3d,tbsim,nscans,npixs,nlev,nchans,idir,&
-                sfcBin,sfcTemp,cldw,df*0.,i,j,nfreq, tbout2, f2, dsrate, clutFree, swc3d)
+                sfcBin,sfcTemp,cldw,df*0.,i,j,nfreq, tbout2, f2, dsrate, clutFree, swc3d, nscans_act)
            do k=1,6
               dtb(k)=(tbout2(7+k)-tbout1(7+k))/0.1
               e(k)=tbobs(i,j,7+k)-tbout1(7+k)
@@ -540,7 +540,7 @@ subroutine  frteprep(binNodes,pRate,swc3d,pRateOut,swcOut,nwOut,z13,emiss,envNod
            dsrate=dsrate*0.5
            call slant1d(binNodes,pRate,z13,emiss,envNode,pType,&
                 qv3D,press3D,airTemp3D,nw3d,tbsim,nscans,npixs,nlev,nchans,idir,&
-                sfcBin,sfcTemp,cldw,df,i,j,nfreq, tbout2, f2, dsrate, clutFree, swc3d)
+                sfcBin,sfcTemp,cldw,df,i,j,nfreq, tbout2, f2, dsrate, clutFree, swc3d, nscans_act)
            oe_tbs(i,j,:,1)=tbobs(i,j,:)
            oe_tbs(i,j,:,2)=tbout2(:)
 202        format(I7,13(F7.2,1x))
@@ -560,7 +560,7 @@ subroutine  frteprep(binNodes,pRate,swc3d,pRateOut,swcOut,nwOut,z13,emiss,envNod
            !df=dot(kgain,e)[0]
            call updatepfields(binNodes,pRateOut,swcOut,z13,emiss,envNode,pType,&
                 qv3D,press3D,airTemp3D,nwOut,nscans,npixs,nlev,nchans,idir,&
-                i,j,nfreq,df, dsrate, clutFree)
+                i,j,nfreq,df, dsrate, clutFree, nscans_act)
         end if
      enddo
   enddo
