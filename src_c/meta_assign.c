@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-//#include <hdf.h>
-#include <mfhdf.h>
 #include "TKheaders.h"
 #include "TK_1CGMI.h"
 

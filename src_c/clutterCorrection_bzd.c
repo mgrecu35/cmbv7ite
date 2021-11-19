@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "TK_2BCMB_hdf5.h"
+#include "TK_2BCMB.h"
 #include "math.h"
 
 extern float missingmod_mp_missing_r4_;

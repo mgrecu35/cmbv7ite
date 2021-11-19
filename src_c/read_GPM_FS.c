@@ -11,15 +11,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <hdf.h>
-#include <mfhdf.h>
 //begin  WSO 9/5/13 include math library for power calculation
 #include <math.h>
 //end    WSO 9/5/13
 #include "TKheaders.h"
 //begin  aaa LAW 9/4/13 1GMI to 1CGMI_r1
 #include "TK_1CGMI.h"
-#include "TK_2AKu_hdf5.h"
 #include "TK_2AKu.h"
 //end    aaa LAW 9/4/13
 #ifdef GFOR 
@@ -106,7 +103,6 @@ void read2akux_(char *jobname, char *f2aku, int *n1c21,
   float           maxr, bb1x1[360][90];
   int i, j, nscan, k, kk, indClutf, k1, izc, inodes, ipia;
   float           q80[nbins], aw, bw, xs;
-  int16           firstbin[49];
   float           z80[nbins],x,y;
 
 //begin  SFM  9/04/2013
@@ -122,12 +118,7 @@ void read2akux_(char *jobname, char *f2aku, int *n1c21,
     
   int inode=0, ii, nscans, rtype;
   char fname[1000];
-  int32 sd_id, sds_id, n_datasets, n_file_attrs,
-           rain_index, geo_index, index, status32;
   float pia;
-  int32 dim_sizes[10];
-  int32 start[3];
-  int32 rank, num_type, attributes, istat;
   int itop, ibb;
   int iSurf,iBinEllip,iClutf, ibb1, ibb2; 
 //begin    WSO 9/5/13 pia effective sigma variables 
@@ -743,7 +734,6 @@ int readdprpflagx_(char *jobname, char *f2aku, int *n1c21,
   float           maxr, bb1x1[360][90];
   int i, j, nscan, k, kk, indClutf, k1, izc, inodes, ipia;
   float           q80[nbins], aw, bw, xs;
-  int16           firstbin[49];
   float           z80[nbins],x,y;
 //  begin  LW  05/06/2014; update metadata in File Header
   char startGranuleTime[100], stopGranuleTime[100];
@@ -758,12 +748,7 @@ int readdprpflagx_(char *jobname, char *f2aku, int *n1c21,
   int inode=0, ii, nscans, rtype;
   char fname[1000];
   char emptygranuletext[100];
-  int32 sd_id, sds_id, n_datasets, n_file_attrs,
-           rain_index, geo_index, index, status32;
   float pia;
-  int32 dim_sizes[10];
-  int32 start[3];
-  int32 rank, num_type, attributes, istat;
   int itop, ibb;
   int iSurf,iBinEllip,iClutf, ibb1, ibb2; 
  

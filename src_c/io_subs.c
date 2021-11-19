@@ -10,8 +10,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-//#include <hdf.h>
-//#include <mfhdf.h>
 #include "TKheaders.h"
 #include "TK_2BCMB.h"
 #ifdef GFOR 

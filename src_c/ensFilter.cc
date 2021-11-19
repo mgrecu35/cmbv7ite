@@ -294,7 +294,7 @@ void setNodeP(int **nodeP,int *nNodes,stormStructType *stormStruct)
   (*nodeP)[4]=stormStruct->nodes[1];
   (*nodeP)[5]=stormStruct->nodes[2];
   (*nodeP)[6]=stormStruct->nodes[3];
-  (*nodeP)[*nNodes-1]=stormStruct->nodes[4];
+  (*nodeP)[*nNodes-1]=stormStruct->nodes[4]+1;
   (*nodeP)[*nNodes-2]=int(0.5*stormStruct->nodes[4]+0.5*stormStruct->nodes[3]);
   for(i=0;i<9;i++)
     nbinmod_mp_n9_[i]=(*nodeP)[i];
@@ -587,7 +587,7 @@ extern "C" void ensradretstcvku_( radarDataType   *radarData,
 
   for(i=0;i<radarData->ngates;i++)
     radarData->hh[i]=(nbins-i)*radarData->dr*cos(*localZAngle/180.*3.1415);
-
+  //nodeP[4]+=1;
   float nstdA=0.125;
   runEns(radarData, stormStruct,retParam, nmu,radarRet, 
 	 xscalev, randemiss, localZAngle, wfractPix, ichunk, 
@@ -617,8 +617,8 @@ extern "C" void ensradretstcvku_( radarDataType   *radarData,
 	  if(nstdA>0.25)
 	    nstdA=0.25;
 	}
-      //else
-      //nstdA=0.125;
+      else
+      nstdA=0.125;
       for(i=0;i<radarRet->nMemb;i++)
 	for(j=0;j<9;j++)
 	  {
@@ -672,7 +672,9 @@ extern "C" void ensradretstcvku_( radarDataType   *radarData,
 		if(i0dm>59)
 		  i0dm=59;
 		if(stormStruct->rainType==2 && dm>0.5)
-		  logdNw[i][j]+=0.2*(cdN-logdNw[i][j]);
+		  {
+		    logdNw[i][j]+=0.2*(cdN-logdNw[i][j]);
+		  }
 		//if(stormStruct->rainType==1 && dm>0.5)
 		//	logdNw[i][j]-=0.5;
 		if(rsfcMean>15)
@@ -988,8 +990,14 @@ void runEns(radarDataType   *radarData,
 
   int imemb;
   float pia35M0,pia13M0,delta;
-  int i,iNode;
+  int i,iNode,j;
 
+  for( imemb=0;imemb<-radarRet->nMemb;imemb++)
+    {
+      for(j=0;j<9; j++)
+	printf("%7.4f ",logdNw[imemb][j]);
+      printf("imemb=%i\n",imemb);
+    }
 
 #pragma omp parallel for default (shared) private(imemb,delta,i,pia35M0,pia13M0)
   for( imemb=0;imemb<radarRet->nMemb;imemb++)
@@ -1076,4 +1084,10 @@ void runEns(radarDataType   *radarData,
 //  SFM  end    06/22/2014
     }  
   //  printf("\n");
+  for( imemb=0;imemb<-radarRet->nMemb;imemb++)
+    {
+      for(j=0;j<9; j++)
+	printf("%7.4f ",logdNw[imemb][j]);
+      printf("on exit imemb=%i\n",imemb);
+    }
 }

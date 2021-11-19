@@ -1,10 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <hdf.h>
-#include <mfhdf.h>
 #include "TKheaders.h"
-#include "TK_2BCMB_hdf5.h"
+#include "TK_2BCMB.h"
 #ifdef GFOR 
 extern int __nbinmod_MOD_imemb;
 #define nbins __nbinmod_MOD_imemb

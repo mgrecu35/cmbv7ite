@@ -4,8 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <hdf.h>
-#include <mfhdf.h>
 #include "TKheaders.h"
 #include "TK_1CGMI.h"
 //begin WSO 04/07/2013
@@ -20,8 +18,7 @@ extern int __nbinmod_MOD_nbin;
 extern int nbinmod_mp_nbin_;
 #define nbins nbinmod_mp_nbin_
 #endif
-#include "TK_2AKuENV_ah6_hdf5.h"
-#include "TK_2AKuENV_hdf5.h"
+#include "TK_2AKuENV.h"
 //  Begin  SFM  09/12/2013
 extern TKINFO ctkfile;
 //  end  SFM  09/12/2013
