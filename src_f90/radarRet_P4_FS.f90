@@ -937,7 +937,7 @@ if(iiad==1) then
    end do
    do i=2,48
       do j=1,dPRData%n1c21
-         do k=1,min(binNodes(j,i,5),binNodes(j,i,4))+1
+         do k=1,min(min(binNodes(j,i,5),binNodes(j,i,4))+1,88)
             rrate3DMS(k,i,j)=pRateOut(j,i,k)
             pwc3DMS(k,i,j)=swcOut(j,i,k)
          enddo
@@ -1007,8 +1007,8 @@ print*, 'oe_tbs'
 print*, dPRData%n1c21
 do j=1,dPRData%n1c21
    if(ialg==2) then
-      call frominputt(st_2adpr)
-      call copyscantimet(j-1)
+      !call frominputt(st_2adpr)
+      !call copyscantimet(j-1)
       !call writescant()
    else
       !print*, j, j+icL, ichunk
@@ -1053,8 +1053,7 @@ do j=1,dPRData%n1c21
       enddo
    endif
    if(ialg==2) then
-      call setlatlons1t( dPRData%xlat(:,j), dPRData%xlon(:,j),                &
-           sfcRain(:,j),sfcRainStd(:,j),piaOut(:,j))
+      
    else
       call setlatlons1_fs( dPRData%xlat(:,j), dPRData%xlon(:,j),                &
            sfcRain(:,j),sfcRainStd(:,j),piaOut(:,j))
@@ -1103,16 +1102,7 @@ do j=1,dPRData%n1c21
          !--fs_300--!
          !end    WSO 2/8/17
       else
-         call copyrainflags1t(dPRData%rainFlagBad(i,j), i-1)
-         call copyioqualitys1t(dPRData%ioqualityflagku(i,j), i-1)
-         call copysnowices1t(dPRData%snowIceCover(i,j), i-1)
-         call copyinitnws1t(initnw_NS(:, i, j), dPRRet%n9(:, i, j), i-1)
-         call copyprincomps1t(princomp_NS(:, i, j), i-1)
-         call copyprofclasss1t(profclass_NS(i, j), i-1)
-         call copysurfprecipbiasratios1t(surfprecipbiasratio_NS(i, j), i-1)
-         call copysubfootvariabilitys1t(subfootvariability_NS(i, j), i-1)
-         call copymultiscatcalcs1t(multiscatcalc_NS(i, j), i-1)
-         call copymultiscatsurfaces1t(multiscatsurface_NS(i, j), i-1)
+
       endif
       !begin  WSO 9/19/13 more accurate environmental bin calculation
       do k = 1, 10
@@ -1123,8 +1113,7 @@ do j=1,dPRData%n1c21
       !end    WSO 9/19/13
       
       if(ialg==2) then
-         call copysigmapias1t(dPRData%srtsigmaPIAku(i, j), i-1)
-         call copysigmazeros1t(dPRData%sigmaZeroKu(i, j), i-1)
+         
       else
          call copysigmapias1_fs(dPRData%srtsigmaPIAku(i, j), i-1)
          call copysigmazeros1_fs(dPRData%sigmaZeroKu(i, j), i-1)
@@ -1153,20 +1142,7 @@ do j=1,dPRData%n1c21
          cldwprof=0
       endif
       if(ialg==2) then
-         call copycldwaters1t(cldwprof,i-1)
-         !begin  WSO 9/15/13 add missing for cloud ice profiles
          cldiprof = missing_r4
-         call copycldices1t(cldiprof,i-1)
-         !end  WSO 9/15/13 
-         call copyrrates1t(rrate3D(:,i,j),rrate3Dstd(:,i,j),i-1)
-         call copypwcs1t(pwc3D(:,i,j),pwc3Dstd(:,i,j),i-1)
-         !begin  WSO 8/7/13
-         call copylwcfracs1t(mlwc_frac(:,i,j),mrate_frac(:,i,j),i-1)
-         call copysfcrainliqfracs1t(sfcRainLiqFrac(i, j), i-1)
-         !end    WSO 8/7/13
-         call copyd0s1t(d03D(:,i,j),i-1)
-         call copyzckus1t(zcKu3D(:,i,j),i-1)
-         call copynodess1t(dPRData%node(:,i,j),i-1)
       else
          call copycldwaters1_fs(cldwprof,i-1)
          cldiprof = missing_r4
@@ -1231,31 +1207,14 @@ do j=1,dPRData%n1c21
 !end    WSO 8/19/13
       !print*, dPRRet%n9(:,i,j)
       if(ialg==2) then 
-         call copylognws1t( log10NwMean,dPRRet%n9(:,i,j),i-1)
-         call copymus1t( mu_mean_prof, dPRRet%n9(:,i,j),i-1)
-         call copypreciptypet(dPRData%raintype(i,j),i-1)
-         call copyw10t(w10_out_NS(i,j),i-1) !modified SJM 12/4/2014
-         call copyw10sigmat(w10_rms_NS(i,j),i-1) !modified SJM 12/4/2014
-         !begin  WSO 8/30/13 update to specify environmental nodes
-         call copyenvtemps1t(dPRData%envTemp(:,i,j),env_nodes(:,i),i-1)
-         call copysfcairtemps1t(dPRData%envSfcTemp(i,j),i-1)
-         call copyenvpresss1t(dPRData%envPress(:,i,j),env_nodes(:,i),i-1)
-         call copysfcairpresss1t(dPRData%envSfcPress(i,j),i-1)
-         call copyenvqvs1t(dPRData%envQv(:,i,j),env_nodes(:,i),i-1)
-         call copyenvsfqvs1t(dPRData%envQv(:,i,j),i-1)
-         call copyskintemps1t(dPRData%envSknTemp(i,j),i-1)
-         call copyskintempsigmas1t(skintempsigma_NS(i, j), i-1)
-         call copycolumnvaporsigmas1t(columnvaporsigma_NS(i, j), i-1)
-         call copycolumncloudliqsigmas1t(columncloudliqsigma_NS(i, j), i-1)
-         call copyalgotypes1t(algotype_NS(i, j), i-1)
-         call copyerrorofdatafits1t(errorofdatafit_NS(i, j), i-1)
+        
       else
          !call copylognws1_fs( log10NwMean,dPRRet%n9(:,i,j),i-1)
          call copynws1_fs(log10NwMean, i-1)
          call copynws1_a_fs(log10NwMean_a, i-1)  ! apriori
          call copynws2_a_fs(log10NwMean_a, i-1)  ! apriori
          call copymus1_fs( mu_mean_prof, dPRRet%n9(:,i,j),i-1)
-         call copypreciptype(dPRData%raintype(i,j),i-1)
+         !call copypreciptype(dPRData%raintype(i,j),i-1)
          call copyw10_fs(w10_out_NS(i,j),i-1) !modified SJM 12/4/2014
          call copyw10sigma_fs(w10_rms_NS(i,j),i-1) !modified SJM 12/4/2014
          call copyenvtemps1_fs(dPRData%envTemp(:,i,j),env_nodes(:,i),i-1)
@@ -1439,8 +1398,7 @@ do j=1,dPRData%n1c21
       enddo
       !end    WSO 6/5/18 
       if(ialg==2) then
-         call copysfcemissouts1t(emissoutL(i,j,:),i-1)
-         call copysfcemissouts1sigmat(emis_rms_NS(i,j,:),i-1)
+        
       else
          call copysfcemissouts1_fs(emissoutL(i,j,:),i-1)
          !print*, 'emis_std3',emis_rms_NS(i,j,:)
@@ -1702,7 +1660,7 @@ do j=1,dPRData%n1c21
       endif
       !if(i==24) print*, tbout
       if(ialg==2) then
-         call copytbouts1t(tbout,i-1)
+         !call copytbouts1t(tbout,i-1)
       else
          call copytbouts1_fs(tbout,i-1)
          !call copytbouts1_fs_300(j-1,tbout,i-1)
@@ -1784,7 +1742,7 @@ do j=1,dPRData%n1c21
       !!end MG 09172013
    enddo
    if(ialg==2) then
-      call writescant()
+      !call writescant()
    else
       !print*, i-1, 'write scan'
       call writescan_fs()

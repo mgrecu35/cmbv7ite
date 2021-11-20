@@ -54,6 +54,7 @@ int main(int argc, char *argv[])
   int idir;
   int icL;
   int nchunk=ndpr/300;
+  nchunk=1;
   printf("nchunk = %d\n",nchunk);
   printf("here \n");
   if(ndpr>0)

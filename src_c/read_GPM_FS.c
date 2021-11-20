@@ -415,6 +415,12 @@ void read2akux_(char *jobname, char *f2aku, int *n1c21,
 // V3 node definition in test
 //	  nodes[inodes]=(L2AKuDataX.PRE.binClutterFreeBottom[j])/2-1;      
 	  nodes[inodes]=(L2AKuDataX.PRE.binClutterFreeBottom[j] - 2)/2;      
+	  if(nodes[inodes]<0)
+	    {
+	      printf("%i %i \n",nodes[inodes],
+		   L2AKuDataX.PRE.binClutterFreeBottom[j]);
+	      exit(0);
+	    }
 //end   WSO 10/19/15
 //end    WSO 9/30/15
 	  inodes++;
@@ -762,7 +768,7 @@ int readdprpflagx_(char *jobname, char *f2aku, int *n1c21,
 //  status = TKopen(&fname[0], "2AKu_aa1", TKREAD, "HDF5", jobname,
 //		  &granuleHandle2AKu, 1);
   printf("%s\n",&fname[0]);
- 
+  printf("got here\n");
   status_alpha = TKopen(&fname[0], "2AKu", TKREAD, "HDF5", jobname,
 		  &granuleHandle2AKu, 1);
   if (status_alpha != 0)
@@ -770,6 +776,8 @@ int readdprpflagx_(char *jobname, char *f2aku, int *n1c21,
 	printf("WARNING: Unable to access 2AKu %i \n",status_alpha);
 	return status_alpha ;
       }
+
+  
   //  end  SFM  09/04/2013
   
   //  SFM  begin  12/17/2013; to avoid empty granule

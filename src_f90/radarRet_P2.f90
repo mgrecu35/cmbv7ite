@@ -1091,6 +1091,7 @@ subroutine radarRetSub2(nmu2,  nmfreq2,   icL, tbRgrid,               &
                     enddo
                     
                     meansfcRain=0
+                    print*, dPRData%node(5,i,j)
                     do k=0,nmemb1-1
                        dPRRet%sfcRainEns(i,j,k+1+(ibatch-1)*nmemb1)=              &
                             radarRet%rrate((iy(k+1)-1)*ngates+dPRData%node(5,i,j))

@@ -234,9 +234,9 @@ subroutine mainfort(jobname, f1ctmi1,f1ctmi2,f1ctmi3,                    &
       !LW 05/03/18
       !CALL write_empty()
       if(ialg==2) then
-         CALL write_emptyt()
+         !CALL write_emptyt()
       else
-         CALL write_empty()
+        ! CALL write_empty()
       endif
 
       CALL meta_mini(algorithmVersion)
@@ -248,15 +248,13 @@ subroutine mainfort(jobname, f1ctmi1,f1ctmi2,f1ctmi3,                    &
   PRINT *,'File read status 2AKu  : ',st_2aku
 
   if(ialg==2) then
-    st_2aku = readdprtpflag(jobname, f2AKu(1:i2AKu),ndpr,rlon,rlat, &
-             iLandOcean, rPrecipFlag, rSfcPrecip)
+     continue
   else
      if(ifs==1) then
         st_2aku = readdprpflagx(jobname, f2AKu(1:i2AKu),ndpr,rlon,rlat, &
              iLandOcean, rPrecipFlag, rSfcPrecip)
      else
-        st_2aku = readdprpflag(jobname, f2AKu(1:i2AKu),ndpr,rlon,rlat, &
-             iLandOcean, rPrecipFlag, rSfcPrecip)
+        continue
      end if
 
   endif
@@ -268,7 +266,7 @@ subroutine mainfort(jobname, f1ctmi1,f1ctmi2,f1ctmi3,                    &
       !LW 05/03/18
       !CALL write_empty()
       if(ialg==2) then
-         CALL write_emptyt()
+        ! CALL write_emptyt()
       else
          CALL write_empty()
       endif
@@ -541,57 +539,16 @@ subroutine do_chunk(i,ialg, idir)
   
   !return
   if(ialg.eq.2) then
-     call read2akut(jobnamec, f2AKuc(1:i2akuc),                             &
-          dPRData%n1c21,dPRData%zku1c21, dPRData%zka1c21,                &
-          dPRData%snrRatioku, dPRData%snrRatioka,                        &
-          dPRData%srtPIAku,dPRData%dsrtPIAku,dPRData%dsrtPIAka,          &
-          dPRData%srtsigmaPIAku, dPRData%dsrtsigmaPIAku,                 &
-          dPRData%dsrtsigmaPIAka,                                        &
-          dPRData%sigmaZeroKu, dPRData%sigmaZeroKa,                      & !SJM 12/3/14
-          dPRdata%sclon, DPRdata%sclat,                                  & !SJM 3/31/16
-          dPRData%xlon,dPRData%xlat,dPRData%badRayFlag,                  &
-          dPRData%rainFlagBad,dPRData%node,dPRData%rainType,             &
-          dPRData%scAngle, ic,                                           &
-          nBSize,dPRData%freezH, dPRData%surfaceZKu,                     &
-          dPRData%iLandOcean,dPRData%srtrelPIAku,dPRData%dsrtrelPIA,     &
-          dPRData%piaHB,                                                 &
-          dPRData%ioqualityflagku, dPRData%ioqualityflagdpr,             &
-          f2ADPRc(1:i2adprc),dprrain,dPRData%BBbin,dPRData%binRealSurface, &
-          dPRData%localZenithAngle, dPRData%elevation, st_2adpr,         &
-          dPRData%secondOfDay,dPRData%NSRelibFlag,dPRData%MSRelibFlag,   &
-          dPRdata%snowIceCover, dPRdata%seaIceConcentration, dPRdata%cBEst)
+
   else
-     call read2aku(jobnamec, f2AKuc(1:i2akuc),                             &
-          dPRData%n1c21,dPRData%zku1c21, dPRData%zka1c21,                &
-          dPRData%snrRatioku, dPRData%snrRatioka,                        &
-          dPRData%srtPIAku,dPRData%dsrtPIAku,dPRData%dsrtPIAka,          &
-          dPRData%srtsigmaPIAku, dPRData%dsrtsigmaPIAku,                 &
-          dPRData%dsrtsigmaPIAka,                                        &
-          dPRData%sigmaZeroKu, dPRData%sigmaZeroKa,                      & !SJM 12/3/14
-          dPRdata%sclon, DPRdata%sclat,                                  & !SJM 3/31/16
-          dPRData%xlon,dPRData%xlat,dPRData%badRayFlag,                  &
-          dPRData%rainFlagBad,dPRData%node,dPRData%rainType,             &
-          dPRData%scAngle, ic,                                           &
-          nBSize,dPRData%freezH, dPRData%surfaceZKu,                     &
-          dPRData%iLandOcean,dPRData%srtrelPIAku,dPRData%dsrtrelPIA,     &
-          dPRData%piaHB,                                                 &
-          dPRData%ioqualityflagku, dPRData%ioqualityflagdpr,             &
-          f2ADPRc(1:i2adprc),dprrain,dPRData%BBbin,dPRData%binRealSurface, &
-          dPRData%localZenithAngle, dPRData%elevation, st_2adpr,         &
-          dPRData%secondOfDay,dPRData%NSRelibFlag,dPRData%MSRelibFlag,   &
-          dPRdata%snowIceCover, dPRdata%seaIceConcentration, dPRdata%cBEst)
+     continue
   endif
   print*, maxval(dPRData%xlat)
   IF (i .EQ. 1) PRINT *,'File read status 2ADPR : ',st_2adpr
   print*, dPRData%n1c21, st_2akuenv
   
   IF (st_2akuenv .GE. 0) THEN
-     st_2akuenv = readenv(jobnamec, ialg, f2AkuENVc(1:i2AkuENVc), &
-          dPRData%n1c21,    &
-          ic, nBSize, dPRData%envQv, dPRData%envTemp,                  &
-          dPRData%envPress, dPRData%envSfcWind,dPRData%envSfcWindU, &
-          dPRData%envSfcWindV, dPRData%envSknTemp,    &
-          dPRData%envSfcTemp, dPRData%envSfcPress,dPRData%envCloud)
+     
   ENDIF
   
   IF (i .EQ. 1) PRINT *,'File read status 2ADPR : ',st_2adpr
@@ -713,25 +670,7 @@ subroutine do_chunkx(i,ialg, idir)
   !stop
   !return
   if(ialg.eq.2) then
-     call read2akut(jobnamec, f2AKuc(1:i2aDPRc),                             &
-          dPRData%n1c21,dPRData%zku1c21, dPRData%zka1c21,                &
-          dPRData%snrRatioku, dPRData%snrRatioka,                        &
-          dPRData%srtPIAku,dPRData%dsrtPIAku,dPRData%dsrtPIAka,          &
-          dPRData%srtsigmaPIAku, dPRData%dsrtsigmaPIAku,                 &
-          dPRData%dsrtsigmaPIAka,                                        &
-          dPRData%sigmaZeroKu, dPRData%sigmaZeroKa,                      & !SJM 12/3/14
-          dPRdata%sclon, DPRdata%sclat,                                  & !SJM 3/31/16
-          dPRData%xlon,dPRData%xlat,dPRData%badRayFlag,                  &
-          dPRData%rainFlagBad,dPRData%node,dPRData%rainType,             &
-          dPRData%scAngle, ic,                                           &
-          nBSize,dPRData%freezH, dPRData%surfaceZKu,                     &
-          dPRData%iLandOcean,dPRData%srtrelPIAku,dPRData%dsrtrelPIA,     &
-          dPRData%piaHB,                                                 &
-          dPRData%ioqualityflagku, dPRData%ioqualityflagdpr,             &
-          f2ADPRc(1:i2adprc),dprrain,dPRData%BBbin,dPRData%binRealSurface, &
-          dPRData%localZenithAngle, dPRData%elevation, st_2adpr,         &
-          dPRData%secondOfDay,dPRData%NSRelibFlag,dPRData%MSRelibFlag,   &
-          dPRdata%snowIceCover, dPRdata%seaIceConcentration, dPRdata%cBEst)
+    
   else
      call read2akux(jobnamec, f2AKuc(1:i2aDPRc),                             &
           dPRData%n1c21,dPRData%zku1c21, dPRData%zka1c21,                &
